@@ -1,5 +1,6 @@
 package com.sstyle.server.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.sstyle.server.domain.JSONResult;
 import com.sstyle.server.domain.Right;
 import com.sstyle.server.domain.User;
@@ -8,6 +9,7 @@ import com.sstyle.server.service.UserService;
 import com.sstyle.server.utils.AESUtil;
 import com.sstyle.server.utils.GeetestLib;
 import com.sstyle.server.utils.MD5Util;
+import com.sstyle.server.utils.RedisClient;
 import lombok.AllArgsConstructor;
 import org.apache.commons.collections.MapUtils;
 import org.apache.shiro.SecurityUtils;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import redis.clients.jedis.JedisPool;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -46,6 +49,7 @@ public class GeetestLibController {
     private RightService rightService;
 
     private final String ERROR_CALLBACK = "1";
+    private int EXPIRE_TIME = 60 * 60 * 5 * 100;
 
     private Logger logger = LoggerFactory.getLogger(GeetestLibController.class);
 
@@ -125,12 +129,15 @@ public class GeetestLibController {
                 List<Right> rightList = rightService.findRights(user.getId());
 
                 // 生成 AUTH Token
-                String staffToken = MD5Util.md5((new StringBuilder()).append(userName).append(user.getId()).toString());
+                String staffToken = AESUtil.aesEncode((new StringBuilder()).append(userName).append("|").append(user.getId()).toString());
 
+                // 用户信息存放在redis
+
+                RedisClient.setex(staffToken, JSONObject.toJSONString(user), EXPIRE_TIME);
                 JSONResult result = new JSONResult(com.sstyle.server.utils.MapUtils.of("token", staffToken, "staff", user, "menus", rightList));
 
-                subject.getSession().setTimeout(1000 * 60 * 60 * 24);
-                return new JSONResult("ok");
+                subject.getSession().setTimeout(EXPIRE_TIME);
+                return result;
             } else {
                 token.clear();
                 return new JSONResult(ERROR_CALLBACK, "用户名或密码错误，请重新输入并完成验证");
@@ -139,5 +146,12 @@ public class GeetestLibController {
         else {
             return new JSONResult("failed");
         }
+    }
+
+
+    @RequestMapping(value = "/logout", method = RequestMethod.POST)
+    public JSONResult doLogout() {
+        SecurityUtils.getSubject().logout();
+        return new JSONResult("您已安全退出");
     }
 }
