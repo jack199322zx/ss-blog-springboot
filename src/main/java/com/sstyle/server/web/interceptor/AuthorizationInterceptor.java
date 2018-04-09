@@ -5,6 +5,8 @@ import com.sstyle.server.utils.AESUtil;
 import com.sstyle.server.utils.ThreadContext;
 import com.sstyle.server.utils.RedisClient;
 import org.apache.commons.lang3.StringUtils;
+import org.n3r.idworker.Id;
+import org.n3r.idworker.IdWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

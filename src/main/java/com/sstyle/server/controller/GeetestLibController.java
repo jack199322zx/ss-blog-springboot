@@ -147,4 +147,11 @@ public class GeetestLibController {
             return new JSONResult("failed");
         }
     }
+
+
+    @RequestMapping(value = "/logout", method = RequestMethod.POST)
+    public JSONResult doLogout() {
+        SecurityUtils.getSubject().logout();
+        return new JSONResult("您已安全退出");
+    }
 }

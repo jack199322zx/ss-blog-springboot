@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sstyle.server.mapper.BlogMapper">
+    <!-- 返回javaBean对象 -->
+    <resultMap type="com.sstyle.server.domain.Article" id="articleMap">
+        <id column="ARTICAL_ID" property="articleId" javaType="long"/>
+        <result column="AUTHOR_REC" property="authorRec" javaType="int"/>
+        <result column="VIEW_NUM" property="viewNum" javaType="int"/>
+        <result column="UPDATE_TIME" property="updateTime" javaType="java.sql.Timestamp"/>
+        <result column="CREATE_TIME" property="createTime" javaType="java.sql.Timestamp"/>
+        <result column="COMMENTS_NUM" property="commentsNum" javaType="int"/>
+        <result column="ARTICAL_IMG" property="articleImg" javaType="string"/>
+        <result column="ARTICAL_TYPE" property="articleType" javaType="int"/>
+        <result column="ARTICAL_DESC" property="articleDesc" javaType="string"/>
+        <result column="ARTICAL_TITLE" property="articleTitle" javaType="string"/>
+        <collection property="techniqueList"  ofType="com.sstyle.server.domain.Flag" column="ARTICAL_ID"
+                    select="findFlags" javaType="java.util.ArrayList">
+        </collection>
+    </resultMap>
+
+    <resultMap id="user2" type="com.sstyle.server.domain.Flag">
+        <id column="ARTICAL_ID" property="articleId" javaType="long"/>
+        <result column="TECHNIQUE_FLAG" property="techniqueFlag" javaType="int"/>
+        <result column="TECHNIQUE_TYPE" property="techniqueType" javaType="int"/>
+        <result column="TECHNIQUE_INFO" property="techniqueInfo" javaType="string"/>
+        <result column="CREATE_TIME" property="createTime" javaType="java.sql.Timestamp"/>
+        <result column="STATE" property="state" javaType="string"/>
+    </resultMap>
+
+
+    <select id="queryArticles"  resultType="com.sstyle.server.domain.Article">
+        SELECT AUTHOR_REC 'authorRec', VIEW_NUM 'viewNum', COMMENTS_NUM 'commentsNum', UPDATE_TIME 'updateTime',
+          CREATE_TIME 'createTime', ARTICAL_IMG 'articleImg', ARTICAL_TYPE 'articleType', ARTICAL_DESC 'articleDesc',
+          ARTICAL_TITLE 'articleTitle', CAST(ARTICAL_ID as char) 'articleId'
+        FROM ss_article
+    </select>
+
+    <select id="queryTecFlags"  resultType="map">
+        SELECT DISTINCT TECHNIQUE_FLAG 'techniqueFlag', TECHNIQUE_INFO 'techniqueInfo', TECHNIQUE_TYPE 'techniqueType'
+        FROM ss_technique
+        WHERE STATE = '1'
+    </select>
+
+    <select id="queryArticlesByPageAndFlag" resultMap="articleMap">
+        SELECT sa.AUTHOR_REC , sa.VIEW_NUM , sa.COMMENTS_NUM , sa.UPDATE_TIME ,
+        sa.CREATE_TIME , sa.ARTICAL_IMG , sa.ARTICAL_TYPE , sa.ARTICAL_DESC ,
+        sa.ARTICAL_TITLE , CAST(sa.ARTICAL_ID as char) 'ARTICAL_ID'
+        FROM ss_article sa, ss_technique st
+        WHERE
+          st.TECHNIQUE_FLAG = #{tech.techniqueFlag}
+          and st.TECHNIQUE_TYPE = #{tech.techniqueType}
+          and st.STATE = '1'
+          and sa.ARTICAL_ID = st.ARTICAL_ID
+        limit #{start}, #{end}
+    </select>
+
+    <select id="queryArticlesByPage" resultType="com.sstyle.server.domain.Article">
+        SELECT sa.AUTHOR_REC 'authorRec', sa.VIEW_NUM 'viewNum', sa.COMMENTS_NUM 'commentsNum', sa.UPDATE_TIME 'updateTime',
+        sa.CREATE_TIME 'createTime', sa.ARTICAL_IMG 'articleImg', sa.ARTICAL_TYPE 'articleType', sa.ARTICAL_DESC 'articleDesc',
+        sa.ARTICAL_TITLE 'articleTitle', CAST(sa.ARTICAL_ID as char) 'articleId'
+        FROM ss_article sa
+        limit #{start}, #{end}
+    </select>
+
+    <select id="findFlags" parameterType="long" resultMap="user2">
+        SELECT ARTICAL_ID,TECHNIQUE_FLAG, TECHNIQUE_TYPE, TECHNIQUE_INFO,CREATE_TIME from ss_technique
+        WHERE ARTICAL_ID = #{ARTICAL_ID}
+        and STATE = '1'
+    </select>
+
+</mapper>
