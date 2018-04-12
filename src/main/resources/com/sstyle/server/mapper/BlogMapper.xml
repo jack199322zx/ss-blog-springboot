@@ -29,11 +29,11 @@
     </resultMap>
 
 
-    <select id="queryArticles"  resultType="com.sstyle.server.domain.Article">
-        SELECT AUTHOR_REC 'authorRec', VIEW_NUM 'viewNum', COMMENTS_NUM 'commentsNum', UPDATE_TIME 'updateTime',
-          CREATE_TIME 'createTime', ARTICAL_IMG 'articleImg', ARTICAL_TYPE 'articleType', ARTICAL_DESC 'articleDesc',
-          ARTICAL_TITLE 'articleTitle', CAST(ARTICAL_ID as char) 'articleId'
-        FROM ss_article
+    <select id="queryArticles"  resultMap="articleMap">
+       SELECT sa.AUTHOR_REC , sa.VIEW_NUM , sa.COMMENTS_NUM , sa.UPDATE_TIME ,
+        sa.CREATE_TIME , sa.ARTICAL_IMG , sa.ARTICAL_TYPE , sa.ARTICAL_DESC ,
+        sa.ARTICAL_TITLE , CAST(sa.ARTICAL_ID as char) 'ARTICAL_ID'
+        FROM ss_article sa
     </select>
 
     <select id="queryTecFlags"  resultType="map">

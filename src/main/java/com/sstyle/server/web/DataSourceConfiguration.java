@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import javax.sql.DataSource;
 
@@ -62,5 +63,12 @@ public class DataSourceConfiguration {
         SqlSessionFactoryBean bean=new SqlSessionFactoryBean();
         bean.setDataSource(dataSource);
         return bean;
+    }
+
+    @Bean
+    public DataSourceTransactionManager transactionManager(@Qualifier("dataSource") DataSource dataSource) {
+        DataSourceTransactionManager  dataSourceTransactionManager = new DataSourceTransactionManager();
+        dataSourceTransactionManager.setDataSource(dataSource);
+        return  dataSourceTransactionManager;
     }
 }

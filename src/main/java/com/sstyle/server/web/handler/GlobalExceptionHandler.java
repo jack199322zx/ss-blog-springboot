@@ -1,8 +1,10 @@
 package com.sstyle.server.web.handler;
 
+import com.aliyuncs.exceptions.ClientException;
 import com.sstyle.server.exception.StaffInvalidException;
 import com.sstyle.server.exception.TokenInvalidException;
 import com.sstyle.server.domain.JSONResult;
+import com.sstyle.server.exception.UserExistException;
 import org.apache.shiro.authz.AuthorizationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -40,6 +42,16 @@ public class GlobalExceptionHandler {
     public JSONResult handleThrowable(Throwable throwable) {
         throwable.printStackTrace();
         return new JSONResult(RSPCODE_FAILED, "请求失败");
+    }
+
+    @ExceptionHandler(value = ClientException.class)
+    public JSONResult handleClientException(ClientException e) {
+        return new JSONResult(RSPCODE_FAILED, "验证码发送失败");
+    }
+
+    @ExceptionHandler(value = UserExistException.class)
+    public JSONResult handleUserExistException(UserExistException e) {
+        return new JSONResult(RSPCODE_FAILED, "用户已经存在");
     }
 
 }

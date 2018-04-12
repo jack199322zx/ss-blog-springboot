@@ -131,4 +131,32 @@ public class RedisClient {
             jedis.close();
         }
     }
+
+    public static Long hset(String key, String field, String value) {
+        Jedis jedis = jedis();
+        Long result = jedis.hset(key, field, value);
+        jedis.close();
+        return result;
+    }
+
+    public static String hget(String key, String field) {
+        Jedis jedis = jedis();
+        String result = jedis.hget(key, field);
+        jedis.close();
+        return result;
+    }
+
+    public static List<String> hvals(String key) {
+        Jedis jedis = jedis();
+        List<String> result = jedis.hvals(key);
+        jedis.close();
+        return result;
+    }
+
+    public static Long incr(String key) {
+        Jedis jedis = jedis();
+        Long result = jedis.incr(key);
+        jedis.close();
+        return result;
+    }
 }

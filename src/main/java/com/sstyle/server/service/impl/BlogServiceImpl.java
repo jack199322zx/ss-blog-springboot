@@ -41,7 +41,7 @@ public class BlogServiceImpl implements BlogService{
                 .limit(6)
                 .collect(Collectors.toList());
         List<Article> authorRecList = articleList.stream().filter(article -> article.getAuthorRec() == 1).collect(Collectors.toList());
-        return MapUtils.of("articleList", articleList.subList(0, 6), "flagList", flagList,
+        return MapUtils.of("articleList", articleList, "flagList", flagList,
                 "viewNumSortedList", viewNumSortedList,
                 "createTimeSortedList", createTimeSortedList,
                 "authorRecList", authorRecList);
@@ -50,9 +50,9 @@ public class BlogServiceImpl implements BlogService{
     @Override
     public Map<String, Object> initBlogList(Map params) {
         int page = MapUtils.getInt(params, "page");
-        Map receiveFlag = MapUtils.getMapForce(params, "receiveFlag");
+        Map receiveFlag = (Map) params.get("receiveFlag");
         int start = page * pageSize;
-        int end = (page + 1) * pageSize - 1;
+        int end = (page + 1) * pageSize;
         List<? extends Object> articleList = new ArrayList<>();
         if (receiveFlag != null) {
             Flag flag = new Flag();
@@ -62,7 +62,6 @@ public class BlogServiceImpl implements BlogService{
         }else {
             articleList = blogMapper.queryArticlesByPage(start, end);
         }
-        List<Map> flagList = blogMapper.queryTecFlags();
-        return MapUtils.of("articleList", articleList, "flagList", flagList);
+        return MapUtils.of("articleList", articleList);
     }
 }

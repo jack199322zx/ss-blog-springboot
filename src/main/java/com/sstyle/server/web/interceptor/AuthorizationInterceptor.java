@@ -26,6 +26,9 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
     private final int TOKEN_KEY_EXPIRE_TIME = 60 * 60 * 5 * 100;
     public static final String GT_INIT_PATH = "/gt/init";
     public static final String GT_LOGIN_PATH = "/gt/check";
+    public static final String BLOG_REGISTER_INIT = "/register/init-captcha";
+    public static final String BLOG_REGISTER_SAVE = "/register/saveUserInfo";
+    public static final String BLOG_REGISTER_ACTIVE = "/register/activate";
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
 
@@ -35,7 +38,9 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
         String servletPath = request.getServletPath();
 
         // 过滤 No AUTH 的请求
-        if (servletPath.equalsIgnoreCase(GT_INIT_PATH) || servletPath.equalsIgnoreCase(GT_LOGIN_PATH)) {
+        if (servletPath.equalsIgnoreCase(GT_INIT_PATH) || servletPath.equalsIgnoreCase(GT_LOGIN_PATH)
+                || servletPath.equalsIgnoreCase(BLOG_REGISTER_INIT) || servletPath.equalsIgnoreCase(BLOG_REGISTER_SAVE)
+                || servletPath.equalsIgnoreCase(BLOG_REGISTER_ACTIVE)) {
             return true;
         }
 
