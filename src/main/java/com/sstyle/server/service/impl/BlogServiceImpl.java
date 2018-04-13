@@ -29,22 +29,26 @@ public class BlogServiceImpl implements BlogService{
 
     private Logger logger = LoggerFactory.getLogger(BlogServiceImpl.class);
 
-    public Map<String, Object> initBlog() {
-        List<Article> articleList = blogMapper.queryArticles();
-        List<Map> flagList = blogMapper.queryTecFlags();
-        List<Article> viewNumSortedList = articleList.stream()
-                .sorted((article1, article2) -> article2.getViewNum() - article1.getViewNum())
-                .limit(6)
-                .collect(Collectors.toList());
-        List<Article> createTimeSortedList = articleList.stream()
-                .sorted((article1, article2) -> article2.getCreateTime().compareTo(article1.getCreateTime()))
-                .limit(6)
-                .collect(Collectors.toList());
-        List<Article> authorRecList = articleList.stream().filter(article -> article.getAuthorRec() == 1).collect(Collectors.toList());
-        return MapUtils.of("articleList", articleList, "flagList", flagList,
-                "viewNumSortedList", viewNumSortedList,
-                "createTimeSortedList", createTimeSortedList,
-                "authorRecList", authorRecList);
+    public Map<String, Object> initBlog(int page) {
+//        List<Article> articleList = blogMapper.queryArticles();
+//        List<Map> flagList = blogMapper.queryTecFlags();
+//        List<Article> viewNumSortedList = articleList.stream()
+//                .sorted((article1, article2) -> article2.getViewNum() - article1.getViewNum())
+//                .limit(6)
+//                .collect(Collectors.toList());
+//        List<Article> createTimeSortedList = articleList.stream()
+//                .sorted((article1, article2) -> article2.getCreateTime().compareTo(article1.getCreateTime()))
+//                .limit(6)
+//                .collect(Collectors.toList());
+//        List<Article> authorRecList = articleList.stream().filter(article -> article.getAuthorRec() == 1).collect(Collectors.toList());
+//        return MapUtils.of("articleList", articleList, "flagList", flagList,
+//                "viewNumSortedList", viewNumSortedList,
+//                "createTimeSortedList", createTimeSortedList,
+//                "authorRecList", authorRecList);
+        int start = page * pageSize;
+        int end = (page + 1) * pageSize;
+        List<Article> articleList = blogMapper.queryArticlesByPage(start, end);
+        return MapUtils.of("articleList", articleList);
     }
 
     @Override

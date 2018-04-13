@@ -29,6 +29,7 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
     public static final String BLOG_REGISTER_INIT = "/register/init-captcha";
     public static final String BLOG_REGISTER_SAVE = "/register/saveUserInfo";
     public static final String BLOG_REGISTER_ACTIVE = "/register/activate";
+    public static final String BLOG_PORTAL = "/blog/init";
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
 
@@ -40,7 +41,7 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
         // 过滤 No AUTH 的请求
         if (servletPath.equalsIgnoreCase(GT_INIT_PATH) || servletPath.equalsIgnoreCase(GT_LOGIN_PATH)
                 || servletPath.equalsIgnoreCase(BLOG_REGISTER_INIT) || servletPath.equalsIgnoreCase(BLOG_REGISTER_SAVE)
-                || servletPath.equalsIgnoreCase(BLOG_REGISTER_ACTIVE)) {
+                || servletPath.equalsIgnoreCase(BLOG_REGISTER_ACTIVE) || servletPath.equalsIgnoreCase(BLOG_PORTAL)) {
             return true;
         }
 
