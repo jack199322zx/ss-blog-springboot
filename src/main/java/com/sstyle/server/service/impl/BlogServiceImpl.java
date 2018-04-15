@@ -1,16 +1,24 @@
 package com.sstyle.server.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.sstyle.server.domain.Article;
 import com.sstyle.server.domain.Flag;
+import com.sstyle.server.domain.JSONResult;
+import com.sstyle.server.domain.User;
 import com.sstyle.server.mapper.BlogMapper;
+import com.sstyle.server.service.BaseService;
 import com.sstyle.server.service.BlogService;
 import com.sstyle.server.utils.MapUtils;
+import com.sstyle.server.utils.RedisClient;
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,26 +33,16 @@ public class BlogServiceImpl implements BlogService{
     @Autowired
     private BlogMapper blogMapper;
 
+    @Autowired
+    private BaseService baseService;
+
+    public static final String AUTHORIZATION_HEADER = "Authorization";
+
     private int pageSize = 6;
 
     private Logger logger = LoggerFactory.getLogger(BlogServiceImpl.class);
 
     public Map<String, Object> initBlog(int page) {
-//        List<Article> articleList = blogMapper.queryArticles();
-//        List<Map> flagList = blogMapper.queryTecFlags();
-//        List<Article> viewNumSortedList = articleList.stream()
-//                .sorted((article1, article2) -> article2.getViewNum() - article1.getViewNum())
-//                .limit(6)
-//                .collect(Collectors.toList());
-//        List<Article> createTimeSortedList = articleList.stream()
-//                .sorted((article1, article2) -> article2.getCreateTime().compareTo(article1.getCreateTime()))
-//                .limit(6)
-//                .collect(Collectors.toList());
-//        List<Article> authorRecList = articleList.stream().filter(article -> article.getAuthorRec() == 1).collect(Collectors.toList());
-//        return MapUtils.of("articleList", articleList, "flagList", flagList,
-//                "viewNumSortedList", viewNumSortedList,
-//                "createTimeSortedList", createTimeSortedList,
-//                "authorRecList", authorRecList);
         int start = page * pageSize;
         int end = (page + 1) * pageSize;
         List<Article> articleList = blogMapper.queryArticlesByPage(start, end);
@@ -52,20 +50,32 @@ public class BlogServiceImpl implements BlogService{
     }
 
     @Override
-    public Map<String, Object> initBlogList(Map params) {
-        int page = MapUtils.getInt(params, "page");
-        Map receiveFlag = (Map) params.get("receiveFlag");
-        int start = page * pageSize;
-        int end = (page + 1) * pageSize;
-        List<? extends Object> articleList = new ArrayList<>();
-        if (receiveFlag != null) {
-            Flag flag = new Flag();
-            flag.setTechniqueFlag((int) receiveFlag.get("techniqueFlag"));
-            flag.setTechniqueType((int) receiveFlag.get("techniqueType"));
-            articleList = blogMapper.queryArticlesByPageAndFlag(start, end, flag);
-        }else {
-            articleList = blogMapper.queryArticlesByPage(start, end);
-        }
-        return MapUtils.of("articleList", articleList);
+    public Map<String, Object> initBlogList() {
+        List<Article> articleList = baseService.queryAllArticles();
+        int size = articleList.size();
+        int pageCount = size/pageSize + 1;
+        List<Map> flagList = baseService.queryAllFlags();
+        List<Article> viewNumSortedList = baseService.queryArticlesByViewNum(articleList, pageSize);
+        List<Article> createTimeSortedList = baseService.queryArticlesByCreateTime(articleList, pageSize);
+        List<Article> newCommentsSortedList = baseService.queryArticlesByNewComments(articleList, pageSize);
+        return MapUtils.of("flagList", flagList,
+                "viewNumSortedList", viewNumSortedList,
+                "createTimeSortedList", createTimeSortedList,
+                "newCommentsSortedList", newCommentsSortedList,
+                "pageCount", pageCount);
+
     }
+
+    public JSONResult queryLoginInfo(HttpServletRequest request) {
+        String Json = RedisClient.get(request.getHeader(AUTHORIZATION_HEADER));
+        if (Json != null) {
+            User user = JSONObject.parseObject(Json, User.class);
+            User backUser = new User();
+            backUser.setUserName(user.getUserName());
+            backUser.setId(user.getId());
+            return new JSONResult(backUser);
+        }
+        return new JSONResult("failed");
+    }
+
 }

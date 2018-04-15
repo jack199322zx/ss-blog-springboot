@@ -3,7 +3,6 @@ package com.sstyle.server.service.impl;
 import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse;
 import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
-import com.github.bingoohuang.utils.net.Email;
 import com.sstyle.server.domain.JSONResult;
 import com.sstyle.server.domain.User;
 import com.sstyle.server.exception.UserExistException;

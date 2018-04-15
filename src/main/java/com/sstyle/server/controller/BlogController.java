@@ -30,8 +30,13 @@ public class BlogController {
     }
 
     @RequestMapping(value = "/blog-list", method = RequestMethod.POST)
-    public JSONResult initBlogList(@RequestBody Map params) {
-        return new JSONResult(blogService.initBlogList(params));
+    public JSONResult initBlogList() {
+        return new JSONResult(blogService.initBlogList());
+    }
+
+    @RequestMapping(value = "/check-login", method = RequestMethod.POST)
+    public JSONResult checkLogin(HttpServletRequest request) {
+        return blogService.queryLoginInfo(request);
     }
 
 
