@@ -12,9 +12,11 @@ import java.util.List;
 @Data
 public class Flag implements Serializable{
     private long articleId;
-    private int techniqueFlag;
-    private int techniqueType;
-    private String techniqueInfo;
+    private int flagId;
+    private int flagDistrict;
+    private int flagType;
+    private String flagTypeDesc;
+    private String flagInfo;
     private Timestamp createTime;
     private String state;
 

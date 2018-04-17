@@ -20,11 +20,10 @@ public class SsServerApplicationTests {
 
 	@Test
 	public void contextLoads() {
-		Flag flag = new Flag();
-		flag.setTechniqueType(1);
-		flag.setTechniqueFlag(0);
-		List<Article> articleList = blogMapper.queryArticlesByPageAndFlag(0, 6, flag);
+		List<Article> articleList = blogMapper.queryArticlesByPageAndFlag(0, 6, 2018001);
 		System.out.println(articleList);
+		List<Article> flagList = blogMapper.queryAllArticlesByDist(0);
+		System.out.println(flagList);
 	}
 
 }

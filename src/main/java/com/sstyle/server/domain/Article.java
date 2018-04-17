@@ -25,5 +25,5 @@ public class Article implements Serializable{
     private int commentsNum;
     private int viewNum;
     private int authorRec;
-    private List<Flag> techniqueList;
+    private List<Flag> flagList;
 }

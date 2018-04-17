@@ -12,7 +12,8 @@ import java.util.Map;
  */
 public interface BlogMapper {
     List<Article> queryArticles();
-    List<Article> queryArticlesByPage(@Param("start") int start,@Param("end") int end);
-    List<Article> queryArticlesByPageAndFlag(@Param("start") int start,@Param("end") int end, @Param("tech") Flag flag);
-    List<Map> queryTecFlags();
+    List<Article> queryArticlesByPageAndDist(@Param("start") int start,@Param("end") int end, @Param("dist") int dist);
+    List<Article> queryArticlesByPageAndFlag(@Param("start") int start,@Param("end") int end, @Param("id") int id);
+    List<Flag> queryTecFlags();
+    List<Article> queryAllArticlesByDist(int dist);
 }

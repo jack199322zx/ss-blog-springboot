@@ -1,6 +1,7 @@
 package com.sstyle.server.service.impl;
 
 import com.sstyle.server.domain.Article;
+import com.sstyle.server.domain.Flag;
 import com.sstyle.server.mapper.BlogMapper;
 import com.sstyle.server.service.BaseService;
 import org.slf4j.Logger;
@@ -26,19 +27,18 @@ public class BaseServiceImpl implements BaseService{
     @Autowired
     private BlogMapper blogMapper;
 
-    @Cacheable
+    @Cacheable(key="001")
     @Override
     public List<Article> queryAllArticles() {
         return blogMapper.queryArticles();
     }
 
-    @Cacheable
+    @Cacheable(key="002")
     @Override
-    public List<Map> queryAllFlags() {
+    public List<Flag> queryAllFlags() {
         return blogMapper.queryTecFlags();
     }
 
-    @Cacheable
     @Override
     public List<Article> queryArticlesByViewNum(List<Article> articleList, int pageSize) {
         List<Article> viewNumSortedList = articleList.stream()
@@ -48,7 +48,7 @@ public class BaseServiceImpl implements BaseService{
         return viewNumSortedList;
     }
 
-    @Cacheable
+
     @Override
     public List<Article> queryArticlesByCreateTime(List<Article> articleList, int pageSize) {
         List<Article> createTimeSortedList = articleList.stream()
@@ -58,7 +58,6 @@ public class BaseServiceImpl implements BaseService{
         return  createTimeSortedList;
     }
 
-    @Cacheable
     @Override
     public List<Article> queryArticlesByNewComments(List<Article> articleList, int pageSize) {
         List<Article> newCommentsSortedList = articleList.stream()
@@ -67,4 +66,5 @@ public class BaseServiceImpl implements BaseService{
                 .collect(Collectors.toList());
         return newCommentsSortedList;
     }
+
 }

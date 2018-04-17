@@ -25,8 +25,8 @@ public class BlogController {
     private BlogService blogService;
 
     @RequestMapping(value = "/init", method = RequestMethod.POST)
-    public JSONResult initBlog(@RequestParam int page) {
-        return new JSONResult(blogService.initBlog(page));
+    public JSONResult initBlog(@RequestParam int page, @RequestParam int dist) {
+        return new JSONResult(blogService.initBlog(page, dist));
     }
 
     @RequestMapping(value = "/blog-list", method = RequestMethod.POST)

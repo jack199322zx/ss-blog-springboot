@@ -42,19 +42,23 @@ public class BlogServiceImpl implements BlogService{
 
     private Logger logger = LoggerFactory.getLogger(BlogServiceImpl.class);
 
-    public Map<String, Object> initBlog(int page) {
+    public Map<String, Object> initBlog(int page, int dist) {
+        List<Article> articleDistList = blogMapper.queryAllArticlesByDist(dist);
+        int size = articleDistList.size();
+        int pageCount = calculatePageCount(size, pageSize);
         int start = page * pageSize;
         int end = (page + 1) * pageSize;
-        List<Article> articleList = blogMapper.queryArticlesByPage(start, end);
-        return MapUtils.of("articleList", articleList);
+        end = end > size ? size: end;
+        return MapUtils.of("articleList", articleDistList.subList(start, end), "pageCount", pageCount);
     }
 
     @Override
     public Map<String, Object> initBlogList() {
         List<Article> articleList = baseService.queryAllArticles();
-        int size = articleList.size();
-        int pageCount = size/pageSize + 1;
-        List<Map> flagList = baseService.queryAllFlags();
+        List<Article> articleDistList = blogMapper.queryAllArticlesByDist(0);
+        int size = articleDistList.size();
+        int pageCount = calculatePageCount(size, pageSize);
+        List<Flag> flagList = baseService.queryAllFlags();
         List<Article> viewNumSortedList = baseService.queryArticlesByViewNum(articleList, pageSize);
         List<Article> createTimeSortedList = baseService.queryArticlesByCreateTime(articleList, pageSize);
         List<Article> newCommentsSortedList = baseService.queryArticlesByNewComments(articleList, pageSize);
@@ -62,6 +66,7 @@ public class BlogServiceImpl implements BlogService{
                 "viewNumSortedList", viewNumSortedList,
                 "createTimeSortedList", createTimeSortedList,
                 "newCommentsSortedList", newCommentsSortedList,
+                "articleDistList", articleDistList,
                 "pageCount", pageCount);
 
     }
@@ -76,6 +81,18 @@ public class BlogServiceImpl implements BlogService{
             return new JSONResult(backUser);
         }
         return new JSONResult("failed");
+    }
+
+    private int calculatePageCount(int size, int pageSize) {
+        int pageCount;
+        if (size < pageSize){
+            pageCount = 1;
+        } else if (size%pageSize > 0){
+            pageCount = size/pageSize + 1;
+        } else {
+            pageCount = size/pageSize;
+        }
+        return pageCount;
     }
 
 }

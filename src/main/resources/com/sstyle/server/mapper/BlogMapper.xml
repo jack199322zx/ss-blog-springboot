@@ -4,26 +4,27 @@
 <mapper namespace="com.sstyle.server.mapper.BlogMapper">
     <!-- 返回javaBean对象 -->
     <resultMap type="com.sstyle.server.domain.Article" id="articleMap">
-        <id column="ARTICAL_ID" property="articleId" javaType="long"/>
+        <id column="ARTICLE_ID" property="articleId" javaType="long"/>
         <result column="AUTHOR_REC" property="authorRec" javaType="int"/>
         <result column="VIEW_NUM" property="viewNum" javaType="int"/>
         <result column="UPDATE_TIME" property="updateTime" javaType="java.sql.Timestamp"/>
         <result column="CREATE_TIME" property="createTime" javaType="java.sql.Timestamp"/>
         <result column="COMMENTS_NUM" property="commentsNum" javaType="int"/>
-        <result column="ARTICAL_IMG" property="articleImg" javaType="string"/>
-        <result column="ARTICAL_TYPE" property="articleType" javaType="int"/>
-        <result column="ARTICAL_DESC" property="articleDesc" javaType="string"/>
-        <result column="ARTICAL_TITLE" property="articleTitle" javaType="string"/>
-        <collection property="techniqueList"  ofType="com.sstyle.server.domain.Flag" column="ARTICAL_ID"
+        <result column="ARTICLE_IMG" property="articleImg" javaType="string"/>
+        <result column="ARTICLE_TYPE" property="articleType" javaType="int"/>
+        <result column="ARTICLE_DESC" property="articleDesc" javaType="string"/>
+        <result column="ARTICLE_TITLE" property="articleTitle" javaType="string"/>
+        <collection property="flagList"  ofType="com.sstyle.server.domain.Flag" column="ARTICLE_ID"
                     select="findFlags" javaType="java.util.ArrayList">
         </collection>
     </resultMap>
 
-    <resultMap id="user2" type="com.sstyle.server.domain.Flag">
-        <id column="ARTICAL_ID" property="articleId" javaType="long"/>
-        <result column="TECHNIQUE_FLAG" property="techniqueFlag" javaType="int"/>
-        <result column="TECHNIQUE_TYPE" property="techniqueType" javaType="int"/>
-        <result column="TECHNIQUE_INFO" property="techniqueInfo" javaType="string"/>
+    <resultMap id="flagMap" type="com.sstyle.server.domain.Flag">
+        <result column="FLAG_ID" property="flagId" javaType="int"/>
+        <result column="FLAG_DIST" property="flagDistrict" javaType="int"/>
+        <result column="FLAG_TYPE" property="flagType" javaType="int"/>
+        <result column="FLAG_TYPE_DESC" property="flagTypeDesc" javaType="string"/>
+        <result column="FLAG_INFO" property="flagInfo" javaType="string"/>
         <result column="CREATE_TIME" property="createTime" javaType="java.sql.Timestamp"/>
         <result column="STATE" property="state" javaType="string"/>
     </resultMap>
@@ -31,42 +32,58 @@
 
     <select id="queryArticles"  resultMap="articleMap">
        SELECT sa.AUTHOR_REC , sa.VIEW_NUM , sa.COMMENTS_NUM , sa.UPDATE_TIME ,
-        sa.CREATE_TIME , sa.ARTICAL_IMG , sa.ARTICAL_TYPE , sa.ARTICAL_DESC ,
-        sa.ARTICAL_TITLE , CAST(sa.ARTICAL_ID as char) 'ARTICAL_ID'
+        sa.CREATE_TIME , sa.ARTICLE_IMG , sa.ARTICLE_TYPE , sa.ARTICLE_DESC ,
+        sa.ARTICLE_TITLE , CAST(sa.ARTICLE_ID as char) 'ARTICLE_ID'
         FROM ss_article sa
     </select>
 
-    <select id="queryTecFlags"  resultType="map">
-        SELECT DISTINCT TECHNIQUE_FLAG 'techniqueFlag', TECHNIQUE_INFO 'techniqueInfo', TECHNIQUE_TYPE 'techniqueType'
-        FROM ss_technique
+    <select id="queryTecFlags"  resultMap="flagMap">
+        SELECT FLAG_ID, FLAG_DIST , FLAG_TYPE, FLAG_TYPE_DESC, FLAG_INFO
+        FROM ss_flag
         WHERE STATE = '1'
     </select>
 
     <select id="queryArticlesByPageAndFlag" resultMap="articleMap">
         SELECT sa.AUTHOR_REC , sa.VIEW_NUM , sa.COMMENTS_NUM , sa.UPDATE_TIME ,
-        sa.CREATE_TIME , sa.ARTICAL_IMG , sa.ARTICAL_TYPE , sa.ARTICAL_DESC ,
-        sa.ARTICAL_TITLE , CAST(sa.ARTICAL_ID as char) 'ARTICAL_ID'
-        FROM ss_article sa, ss_technique st
+        sa.CREATE_TIME , sa.ARTICLE_IMG , sa.ARTICLE_TYPE , sa.ARTICLE_DESC ,
+        sa.ARTICLE_TITLE , CAST(sa.ARTICLE_ID as char) 'ARTICLE_ID'
+        FROM ss_article sa, ss_article_flag saf, ss_flag sf
         WHERE
-          st.TECHNIQUE_FLAG = #{tech.techniqueFlag}
-          and st.TECHNIQUE_TYPE = #{tech.techniqueType}
-          and st.STATE = '1'
-          and sa.ARTICAL_ID = st.ARTICAL_ID
+          sa.ARTICLE_ID = saf.ARTICLE_ID
+          and saf.FLAG_ID = sf.FLAG_ID
+          and saf.FLAG_ID = #{id}
+          and sf.STATE = '1'
         limit #{start}, #{end}
     </select>
 
-    <select id="queryArticlesByPage" resultType="com.sstyle.server.domain.Article">
+    <select id="queryArticlesByPageAndDist" resultType="com.sstyle.server.domain.Article">
         SELECT sa.AUTHOR_REC 'authorRec', sa.VIEW_NUM 'viewNum', sa.COMMENTS_NUM 'commentsNum', sa.UPDATE_TIME 'updateTime',
-        sa.CREATE_TIME 'createTime', sa.ARTICAL_IMG 'articleImg', sa.ARTICAL_TYPE 'articleType', sa.ARTICAL_DESC 'articleDesc',
-        sa.ARTICAL_TITLE 'articleTitle', CAST(sa.ARTICAL_ID as char) 'articleId'
-        FROM ss_article sa
+        sa.CREATE_TIME 'createTime', sa.ARTICLE_IMG 'articleImg', sa.ARTICLE_TYPE 'articleType', sa.ARTICLE_DESC 'articleDesc',
+        sa.ARTICLE_TITLE 'articleTitle', CAST(sa.ARTICLE_ID as char) 'articleId'
+        FROM ss_article sa, ss_article_flag saf, ss_flag sf
+        WHERE sa.ARTICLE_ID = saf.ARTICLE_ID
+        and saf.FLAG_ID = sf.FLAG_ID
+        and sf.FLAG_DIST = #{dist}
+        ORDER BY sa.UPDATE_TIME DESC
         limit #{start}, #{end}
     </select>
 
-    <select id="findFlags" parameterType="long" resultMap="user2">
-        SELECT ARTICAL_ID,TECHNIQUE_FLAG, TECHNIQUE_TYPE, TECHNIQUE_INFO,CREATE_TIME from ss_technique
-        WHERE ARTICAL_ID = #{ARTICAL_ID}
+    <select id="findFlags" parameterType="long" resultMap="flagMap">
+        SELECT sf.FLAG_ID, sf.FLAG_DIST , sf.FLAG_TYPE, sf.FLAG_TYPE_DESC, sf.FLAG_INFO  from ss_flag sf, ss_article_flag saf
+        WHERE saf.ARTICLE_ID = #{ARTICLE_ID}
+        and saf.FLAG_ID = sf.FLAG_ID
         and STATE = '1'
     </select>
 
+    <select id="queryAllArticlesByDist" parameterType="int" resultMap="articleMap">
+         SELECT DISTINCT sa.AUTHOR_REC, sa.VIEW_NUM , sa.COMMENTS_NUM , sa.UPDATE_TIME ,
+        sa.CREATE_TIME , sa.ARTICLE_IMG , sa.ARTICLE_TYPE , sa.ARTICLE_DESC ,
+        sa.ARTICLE_TITLE , CAST(sa.ARTICLE_ID as char) 'ARTICLE_ID'
+        FROM ss_article sa, ss_article_flag saf, ss_flag sf
+        WHERE sa.ARTICLE_ID = saf.ARTICLE_ID
+        and saf.FLAG_ID = sf.FLAG_ID
+        and sf.FLAG_DIST = #{dist}
+        and sf.STATE = '1'
+        ORDER BY sa.UPDATE_TIME DESC
+    </select>
 </mapper>
