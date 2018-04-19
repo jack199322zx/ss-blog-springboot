@@ -104,32 +104,32 @@ public class GeetestLibController {
             gtResult = gtSdk.failbackValidateRequest(challenge, validate, seccode);
             System.out.println(gtResult);
         }
-        String userName = MapUtils.getString(formMap, "userName");
+        String userCode = MapUtils.getString(formMap, "userName");
 
         if (gtResult == 1) {
-            UsernamePasswordToken token = new UsernamePasswordToken(userName,
+            UsernamePasswordToken token = new UsernamePasswordToken(userCode,
                     AESUtil.aesEncode(MapUtils.getString(formMap, "password")));
 
             //获取当前的Subject
             Subject subject = SecurityUtils.getSubject();
             try {
-                logger.info("对用户[" + userName + "]进行登录验证..验证开始");
+                logger.info("对用户[" + userCode + "]进行登录验证..验证开始");
                 subject.login(token);
-                logger.info("对用户[" + userName + "]进行登录验证..验证通过");
+                logger.info("对用户[" + userCode + "]进行登录验证..验证通过");
             } catch (UnknownAccountException uae) {
-                logger.info("对用户[" + userName + "]进行登录验证..验证未通过,未知账户");
+                logger.info("对用户[" + userCode + "]进行登录验证..验证未通过,未知账户");
             } catch (IncorrectCredentialsException ice) {
-                logger.info("对用户[" + userName + "]进行登录验证..验证未通过,错误的凭证");
+                logger.info("对用户[" + userCode + "]进行登录验证..验证未通过,错误的凭证");
             }
 
             //验证是否登录成功
             if (subject.isAuthenticated()) {
-                logger.info("用户[" + userName + "]登录认证通过(这里可以进行一些认证通过后的一些系统参数初始化操作)");
-                User user = userService.findByUsername(userName);
+                logger.info("用户[" + userCode + "]登录认证通过(这里可以进行一些认证通过后的一些系统参数初始化操作)");
+                User user = userService.findByUsercode(userCode);
                 List<Right> rightList = rightService.findRights(user.getId());
 
                 // 生成 AUTH Token
-                String staffToken = AESUtil.aesEncode((new StringBuilder()).append(userName).append("|").append(user.getId()).toString());
+                String staffToken = AESUtil.aesEncode((new StringBuilder()).append(userCode).append("|").append(user.getId()).toString());
 
                 // 用户信息存放在redis
 

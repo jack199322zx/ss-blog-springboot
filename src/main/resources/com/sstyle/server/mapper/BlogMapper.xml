@@ -10,10 +10,16 @@
         <result column="UPDATE_TIME" property="updateTime" javaType="java.sql.Timestamp"/>
         <result column="CREATE_TIME" property="createTime" javaType="java.sql.Timestamp"/>
         <result column="COMMENTS_NUM" property="commentsNum" javaType="int"/>
+        <result column="FAVORITE_NUM" property="favoriteNum" javaType="int"/>
         <result column="ARTICLE_IMG" property="articleImg" javaType="string"/>
+        <result column="ARTICLE_SIGN" property="articleSign" javaType="string"/>
         <result column="ARTICLE_TYPE" property="articleType" javaType="int"/>
         <result column="ARTICLE_DESC" property="articleDesc" javaType="string"/>
         <result column="ARTICLE_TITLE" property="articleTitle" javaType="string"/>
+        <association property="user" javaType="com.sstyle.server.domain.User">
+            <id column="USER_ID" property="id"></id>
+            <result column="USER_NAME" property="userName"/>
+        </association>
         <collection property="flagList"  ofType="com.sstyle.server.domain.Flag" column="ARTICLE_ID"
                     select="findFlags" javaType="java.util.ArrayList">
         </collection>
@@ -33,7 +39,7 @@
     <select id="queryArticles"  resultMap="articleMap">
        SELECT sa.AUTHOR_REC , sa.VIEW_NUM , sa.COMMENTS_NUM , sa.UPDATE_TIME ,
         sa.CREATE_TIME , sa.ARTICLE_IMG , sa.ARTICLE_TYPE , sa.ARTICLE_DESC ,
-        sa.ARTICLE_TITLE , CAST(sa.ARTICLE_ID as char) 'ARTICLE_ID'
+        sa.ARTICLE_TITLE , sa.FAVORITE_NUM ,CAST(sa.ARTICLE_ID as char) 'ARTICLE_ID'
         FROM ss_article sa
     </select>
 
@@ -78,12 +84,28 @@
     <select id="queryAllArticlesByDist" parameterType="int" resultMap="articleMap">
          SELECT DISTINCT sa.AUTHOR_REC, sa.VIEW_NUM , sa.COMMENTS_NUM , sa.UPDATE_TIME ,
         sa.CREATE_TIME , sa.ARTICLE_IMG , sa.ARTICLE_TYPE , sa.ARTICLE_DESC ,
-        sa.ARTICLE_TITLE , CAST(sa.ARTICLE_ID as char) 'ARTICLE_ID'
+        sa.ARTICLE_TITLE , sa.FAVORITE_NUM, CAST(sa.ARTICLE_ID as char) 'ARTICLE_ID'
         FROM ss_article sa, ss_article_flag saf, ss_flag sf
         WHERE sa.ARTICLE_ID = saf.ARTICLE_ID
         and saf.FLAG_ID = sf.FLAG_ID
         and sf.FLAG_DIST = #{dist}
         and sf.STATE = '1'
         ORDER BY sa.UPDATE_TIME DESC
+    </select>
+
+
+    <select id="queryArticleDetailById" parameterType="string" resultMap="articleMap">
+        SELECT sa.AUTHOR_REC , sa.VIEW_NUM , sa.COMMENTS_NUM , sa.UPDATE_TIME , sa.ARTICLE_SIGN,
+        sa.CREATE_TIME , sa.ARTICLE_IMG , sa.ARTICLE_TYPE , sa.ARTICLE_DESC , sa.FAVORITE_NUM,
+        sa.ARTICLE_TITLE , CAST(sa.ARTICLE_ID as char) 'ARTICLE_ID', CAST(su.USER_ID as char) 'USER_ID',
+        su.USER_NAME
+        FROM ss_article sa LEFT JOIN ss_user su
+        ON sa.USER_ID = su.USER_ID
+        WHERE sa.ARTICLE_ID = #{id}
+        and su.STATE = '1'
+    </select>
+
+    <select id="queryPublishArticleNum" parameterType="long" resultType="int">
+        SELECT COUNT(*) FROM ss_article WHERE USER_ID = #{id}
     </select>
 </mapper>

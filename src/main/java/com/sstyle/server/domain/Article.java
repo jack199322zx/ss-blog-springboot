@@ -16,13 +16,16 @@ import java.util.Map;
 public class Article implements Serializable{
 
     private long articleId;
+    private User user;
     private String articleTitle;
+    private String articleSign;
     private String articleDesc;
     private int articleType;
     private String articleImg;
     private Timestamp createTime;
     private Timestamp updateTime;
     private int commentsNum;
+    private int favoriteNum;
     private int viewNum;
     private int authorRec;
     private List<Flag> flagList;

@@ -76,7 +76,7 @@ public class BlogServiceImpl implements BlogService{
         if (Json != null) {
             User user = JSONObject.parseObject(Json, User.class);
             User backUser = new User();
-            backUser.setUserName(user.getUserName());
+            backUser.setUserCode(user.getUserCode());
             backUser.setId(user.getId());
             return new JSONResult(backUser);
         }
@@ -95,4 +95,19 @@ public class BlogServiceImpl implements BlogService{
         return pageCount;
     }
 
+    @Override
+    public Map<String, Object> queryArticleDetail(String articleId) {
+        List<Article> articleList = baseService.queryAllArticles();
+        List<Article> viewNumSortedList = baseService.queryArticlesByViewNum(articleList, pageSize);
+        List<Article> createTimeSortedList = baseService.queryArticlesByCreateTime(articleList, pageSize);
+        List<Article> newCommentsSortedList = baseService.queryArticlesByNewComments(articleList, pageSize);
+        Article article = blogMapper.queryArticleDetailById(articleId);
+        int num = blogMapper.queryPublishArticleNum(article.getUser().getId());
+        return MapUtils.of("article", article,
+                "publishNum", num,
+                "viewNumSortedList", viewNumSortedList,
+                "createTimeSortedList", createTimeSortedList,
+                "newCommentsSortedList", newCommentsSortedList
+                );
+    }
 }

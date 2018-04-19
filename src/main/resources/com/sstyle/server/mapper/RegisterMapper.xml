@@ -3,12 +3,12 @@
 <mapper namespace="com.sstyle.server.mapper.RegisterMapper">
 
     <insert id="saveUserByEmail" parameterType="map">
-        INSERT INTO ss_user(USER_NAME, USER_ID, USER_PASSWORD, USER_EMAIL, CREATE_TIME, UPDATE_TIME, STATE) VALUES(#{params.emailCode}, #{params.userId},
+        INSERT INTO ss_user(USER_CODE, USER_ID, USER_PASSWORD, USER_EMAIL, CREATE_TIME, UPDATE_TIME, STATE) VALUES(#{params.emailCode}, #{params.userId},
         #{params.emailPassword},#{params.emailCode},NOW(), NOW(), '2')
     </insert>
 
     <insert id="saveUserByPhone" parameterType="map">
-        INSERT INTO ss_user(USER_NAME, USER_ID, USER_PASSWORD, USER_TELEPHONE, CREATE_TIME, UPDATE_TIME) VALUES(#{params.postPhone}, #{params.userId},
+        INSERT INTO ss_user(USER_CODE, USER_ID, USER_PASSWORD, USER_TELEPHONE, CREATE_TIME, UPDATE_TIME) VALUES(#{params.postPhone}, #{params.userId},
         #{params.password},#{params.postPhone},NOW(), NOW())
     </insert>
 
@@ -20,4 +20,5 @@
     <update id="updateActiveUser" parameterType="string">
         UPDATE ss_user SET STATE = '1' WHERE USER_ID = #{id}
     </update>
+
 </mapper>

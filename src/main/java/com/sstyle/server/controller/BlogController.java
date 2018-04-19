@@ -39,5 +39,9 @@ public class BlogController {
         return blogService.queryLoginInfo(request);
     }
 
+    @RequestMapping(value = "/blog-detail", method = RequestMethod.POST)
+    public JSONResult initBlogDetail(@RequestParam String articleId) {
+        return new JSONResult(blogService.queryArticleDetail(articleId));
+    }
 
 }
