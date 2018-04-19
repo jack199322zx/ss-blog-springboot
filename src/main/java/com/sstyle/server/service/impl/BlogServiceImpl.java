@@ -5,7 +5,9 @@ import com.sstyle.server.domain.Article;
 import com.sstyle.server.domain.Flag;
 import com.sstyle.server.domain.JSONResult;
 import com.sstyle.server.domain.User;
+import com.sstyle.server.mapper.ArticleMapper;
 import com.sstyle.server.mapper.BlogMapper;
+import com.sstyle.server.mapper.UserMapper;
 import com.sstyle.server.service.BaseService;
 import com.sstyle.server.service.BlogService;
 import com.sstyle.server.utils.MapUtils;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -32,6 +35,12 @@ public class BlogServiceImpl implements BlogService{
 
     @Autowired
     private BlogMapper blogMapper;
+
+    @Autowired
+    private ArticleMapper articleMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Autowired
     private BaseService baseService;
@@ -96,18 +105,36 @@ public class BlogServiceImpl implements BlogService{
     }
 
     @Override
+    @Transactional
     public Map<String, Object> queryArticleDetail(String articleId) {
+        Article article = blogMapper.queryArticleDetailById(articleId);
+        int viewNum = article.getViewNum() + 1;
+        blogMapper.updateViewNum(viewNum, articleId);
+        article.setViewNum(viewNum);
+        int num = blogMapper.queryPublishArticleNum(article.getUser().getId());
         List<Article> articleList = baseService.queryAllArticles();
         List<Article> viewNumSortedList = baseService.queryArticlesByViewNum(articleList, pageSize);
         List<Article> createTimeSortedList = baseService.queryArticlesByCreateTime(articleList, pageSize);
         List<Article> newCommentsSortedList = baseService.queryArticlesByNewComments(articleList, pageSize);
-        Article article = blogMapper.queryArticleDetailById(articleId);
-        int num = blogMapper.queryPublishArticleNum(article.getUser().getId());
         return MapUtils.of("article", article,
                 "publishNum", num,
                 "viewNumSortedList", viewNumSortedList,
                 "createTimeSortedList", createTimeSortedList,
                 "newCommentsSortedList", newCommentsSortedList
                 );
+    }
+
+    @Override
+    @Transactional
+    public int saveFavoriteByArticleId(long articleId, long userId) {
+        userMapper.saveUserFavorite(userId, articleId);
+        return articleMapper.saveFavoriteById(articleId);
+    }
+
+    @Override
+    @Transactional
+    public int cancelFavoriteByArticleId(long articleId, long userId) {
+        userMapper.cancelUserFavorite(userId, articleId);
+        return articleMapper.cancelFavoriteById(articleId);
     }
 }

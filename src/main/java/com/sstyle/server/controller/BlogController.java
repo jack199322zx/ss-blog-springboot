@@ -44,4 +44,15 @@ public class BlogController {
         return new JSONResult(blogService.queryArticleDetail(articleId));
     }
 
+    @RequestMapping(value = "/save-favorite", method = RequestMethod.POST)
+    public JSONResult saveFavorite(@RequestParam long articleId, @RequestParam long userId) {
+        return new JSONResult(blogService.saveFavoriteByArticleId(articleId, userId));
+    }
+
+    @RequestMapping(value = "/cancel-favorite", method = RequestMethod.POST)
+    public JSONResult cancelFavorite(@RequestParam long articleId, @RequestParam long userId) {
+        return new JSONResult(blogService.cancelFavoriteByArticleId(articleId, userId));
+    }
+
+
 }

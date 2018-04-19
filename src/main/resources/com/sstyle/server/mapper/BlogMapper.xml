@@ -108,4 +108,8 @@
     <select id="queryPublishArticleNum" parameterType="long" resultType="int">
         SELECT COUNT(*) FROM ss_article WHERE USER_ID = #{id}
     </select>
+
+    <update id="updateViewNum">
+        UPDATE ss_article SET VIEW_NUM = #{viewNum} WHERE ARTICLE_ID = #{articleId}
+    </update>
 </mapper>

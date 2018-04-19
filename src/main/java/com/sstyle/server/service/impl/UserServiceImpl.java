@@ -1,6 +1,5 @@
 package com.sstyle.server.service.impl;
 
-import com.sstyle.server.domain.StaffBean;
 import com.sstyle.server.domain.User;
 import com.sstyle.server.mapper.UserMapper;
 import com.sstyle.server.service.UserService;
@@ -33,4 +32,13 @@ public class UserServiceImpl implements UserService{
         return null;
     }
 
+    @Override
+    public int saveUserFavorite(long userId, long articleId) {
+        return userMapper.saveUserFavorite(userId, articleId);
+    }
+
+    @Override
+    public int cancelUserFavorite(long userId, long articleId) {
+        return userMapper.cancelUserFavorite(userId, articleId);
+    }
 }

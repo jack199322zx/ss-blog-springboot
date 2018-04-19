@@ -7,4 +7,12 @@
                 FROM ss_user
                 WHERE USER_CODE = #{username}
     </select>
+
+    <insert id="saveUserFavorite">
+        INSERT INTO ss_user_favorite(USER_ID, FAVORITE_ARTICLE_ID, CREATE_TIME, UPDATE_TIME) VALUES(#{userId}, #{articleId}, NOW(), NOW())
+    </insert>
+
+    <update id="cancelUserFavorite">
+        UPDATE ss_user_favorite SET STATE = '0' WHERE USER_ID = #{userId} and FAVORITE_ARTICLE_ID = #{articleId}
+    </update>
 </mapper>

@@ -18,4 +18,5 @@ public interface BlogMapper {
     List<Article> queryAllArticlesByDist(int dist);
     Article queryArticleDetailById(String articleId);
     int queryPublishArticleNum(long userId);
+    int updateViewNum(@Param("viewNum") int viewNum, @Param("articleId") String articleId);
 }
