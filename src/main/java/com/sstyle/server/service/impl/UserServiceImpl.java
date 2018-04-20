@@ -3,9 +3,11 @@ package com.sstyle.server.service.impl;
 import com.sstyle.server.domain.User;
 import com.sstyle.server.mapper.UserMapper;
 import com.sstyle.server.service.UserService;
+import com.sstyle.server.utils.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -33,12 +35,19 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public int saveUserFavorite(long userId, long articleId) {
-        return userMapper.saveUserFavorite(userId, articleId);
+    public Map<String, Integer> queryUserFavoriteAndFollow(long userId, long articleId, long authorId) {
+        Integer favorite = userMapper.queryUserFavorite(userId, articleId);
+        Integer follow = userMapper.queryUserFollow(authorId, userId);
+        return MapUtils.of("favorite", favorite, "follow", follow);
     }
 
     @Override
-    public int cancelUserFavorite(long userId, long articleId) {
-        return userMapper.cancelUserFavorite(userId, articleId);
+    public int saveFollowById(long authorId, long followerId) {
+        return userMapper.saveUserFollow(authorId, followerId);
+    }
+
+    @Override
+    public int cancelFollowById(long authorId, long followerId) {
+        return userMapper.cancelUserFollow(authorId, followerId);
     }
 }

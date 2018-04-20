@@ -34,10 +34,6 @@ public class BlogController {
         return new JSONResult(blogService.initBlogList());
     }
 
-    @RequestMapping(value = "/check-login", method = RequestMethod.POST)
-    public JSONResult checkLogin(HttpServletRequest request) {
-        return blogService.queryLoginInfo(request);
-    }
 
     @RequestMapping(value = "/blog-detail", method = RequestMethod.POST)
     public JSONResult initBlogDetail(@RequestParam String articleId) {

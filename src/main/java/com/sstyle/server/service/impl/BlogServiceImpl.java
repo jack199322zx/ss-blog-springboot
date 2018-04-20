@@ -80,17 +80,6 @@ public class BlogServiceImpl implements BlogService{
 
     }
 
-    public JSONResult queryLoginInfo(HttpServletRequest request) {
-        String Json = RedisClient.get(request.getHeader(AUTHORIZATION_HEADER));
-        if (Json != null) {
-            User user = JSONObject.parseObject(Json, User.class);
-            User backUser = new User();
-            backUser.setUserCode(user.getUserCode());
-            backUser.setId(user.getId());
-            return new JSONResult(backUser);
-        }
-        return new JSONResult("failed");
-    }
 
     private int calculatePageCount(int size, int pageSize) {
         int pageCount;

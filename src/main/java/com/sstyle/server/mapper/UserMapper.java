@@ -13,8 +13,18 @@ import java.util.Set;
 
 public interface UserMapper {
     User queryUsername(String username);
+
     int saveUserFavorite(@Param("userId") long userId, @Param("articleId") long articleId);
+
     int cancelUserFavorite(@Param("userId") long userId, @Param("articleId") long articleId);
-//    Set<String> queryRoles(String username);
+
+    int queryUserFavorite(@Param("userId") long userId, @Param("articleId") long articleId);
+
+    int queryUserFollow(@Param("authorId") long authorId, @Param("userId") long userId);
+
+    int saveUserFollow(@Param("authorId") long authorId, @Param("followerId") long followerId);
+
+    int cancelUserFollow(@Param("authorId") long authorId, @Param("followerId") long followerId);
+    //    Set<String> queryRoles(String username);
 //    Set<String> queryPermissions(String staffId);
 }

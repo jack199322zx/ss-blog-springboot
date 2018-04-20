@@ -1,6 +1,7 @@
 package com.sstyle.server.domain;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
 
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.io.Serializable;
  * @Date 2018/3/27 16:21
  */
 @Data
+@NoArgsConstructor
 public class User implements Serializable{
 
     private Long id;

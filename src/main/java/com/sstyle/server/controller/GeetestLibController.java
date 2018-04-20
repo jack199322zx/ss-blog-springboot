@@ -132,9 +132,14 @@ public class GeetestLibController {
                 String staffToken = AESUtil.aesEncode((new StringBuilder()).append(userCode).append("|").append(user.getId()).toString());
 
                 // 用户信息存放在redis
-
-                RedisClient.setex(staffToken, JSONObject.toJSONString(user), EXPIRE_TIME);
-                JSONResult result = new JSONResult(com.sstyle.server.utils.MapUtils.of("token", staffToken, "staff", user, "menus", rightList));
+                User backUser = new User();
+                backUser.setId(user.getId());
+                backUser.setUserCode(user.getUserCode());
+                backUser.setAddress(user.getAddress());
+                backUser.setEmail(user.getEmail());
+                backUser.setUserName(user.getUserName());
+                RedisClient.setex(staffToken, JSONObject.toJSONString(backUser), EXPIRE_TIME);
+                JSONResult result = new JSONResult(com.sstyle.server.utils.MapUtils.of("token", staffToken, "staff", backUser, "menus", rightList));
 
                 subject.getSession().setTimeout(EXPIRE_TIME);
                 return result;
