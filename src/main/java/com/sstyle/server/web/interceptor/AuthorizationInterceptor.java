@@ -30,6 +30,8 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
     public static final String BLOG_REGISTER_SAVE = "/register/saveUserInfo";
     public static final String BLOG_REGISTER_ACTIVE = "/register/activate";
     public static final String BLOG_PORTAL = "/blog/init";
+    public static final String BLOG_CHECK_LOGIN = "/blog/check-login";
+    public static final String BLOG_ARTICLE_DETAIL = "/blog/blog-detail";
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
 
@@ -41,14 +43,16 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
         // 过滤 No AUTH 的请求
         if (servletPath.equalsIgnoreCase(GT_INIT_PATH) || servletPath.equalsIgnoreCase(GT_LOGIN_PATH)
                 || servletPath.equalsIgnoreCase(BLOG_REGISTER_INIT) || servletPath.equalsIgnoreCase(BLOG_REGISTER_SAVE)
-                || servletPath.equalsIgnoreCase(BLOG_REGISTER_ACTIVE) || servletPath.equalsIgnoreCase(BLOG_PORTAL)) {
+                || servletPath.equalsIgnoreCase(BLOG_REGISTER_ACTIVE) || servletPath.equalsIgnoreCase(BLOG_PORTAL)
+                || servletPath.equalsIgnoreCase(BLOG_CHECK_LOGIN) || servletPath.equalsIgnoreCase(BLOG_ARTICLE_DETAIL)) {
+            logger.info("===============过滤no auth请求==============");
             return true;
         }
 
 
         // 拦截 Token 不存在的请求
         String authToken = getAuthToken(request);
-        if (StringUtils.isBlank(authToken)) {
+        if (StringUtils.isEmpty(authToken)) {
             throw new TokenInvalidException();
         }
 

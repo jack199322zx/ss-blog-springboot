@@ -50,5 +50,10 @@ public class BlogController {
         return new JSONResult(blogService.cancelFavoriteByArticleId(articleId, userId));
     }
 
+    @RequestMapping(value = "/check-login", method = RequestMethod.POST)
+    public JSONResult checkLogin(HttpServletRequest request) {
+        return blogService.queryLoginInfo(request);
+    }
+
 
 }

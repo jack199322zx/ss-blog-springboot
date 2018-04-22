@@ -68,7 +68,7 @@ public class MShiroFilterFactoryBean extends ShiroFilterFactoryBean {
             boolean flag = true;
             int idx = 0;
             if(( idx = str.indexOf(".")) > 0){
-                str = str.substring(idx);
+                str = str.substring(idx + 1);
                 if(ignoreExt.contains(str.toLowerCase()))
                     flag = false;
             }

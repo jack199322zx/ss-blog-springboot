@@ -88,6 +88,7 @@
         FROM ss_article sa, ss_article_flag saf, ss_flag sf
         WHERE sa.ARTICLE_ID = saf.ARTICLE_ID
         and saf.FLAG_ID = sf.FLAG_ID
+        and sa.ARTICLE_TYPE = sf.FLAG_DIST
         and sf.FLAG_DIST = #{dist}
         and sf.STATE = '1'
         ORDER BY sa.UPDATE_TIME DESC

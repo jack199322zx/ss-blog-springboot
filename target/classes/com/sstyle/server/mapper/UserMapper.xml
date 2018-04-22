@@ -10,9 +10,27 @@
 
     <insert id="saveUserFavorite">
         INSERT INTO ss_user_favorite(USER_ID, FAVORITE_ARTICLE_ID, CREATE_TIME, UPDATE_TIME) VALUES(#{userId}, #{articleId}, NOW(), NOW())
+          ON DUPLICATE KEY UPDATE STATE = '1', UPDATE_TIME = NOW()
     </insert>
 
     <update id="cancelUserFavorite">
         UPDATE ss_user_favorite SET STATE = '0' WHERE USER_ID = #{userId} and FAVORITE_ARTICLE_ID = #{articleId}
+    </update>
+
+    <select id="queryUserFavorite" resultType="int">
+        SELECT COUNT(*) FROM ss_user_favorite WHERE USER_ID = #{userId} and  FAVORITE_ARTICLE_ID = #{articleId} and STATE = '1'
+    </select>
+
+    <select id="queryUserFollow" resultType="int">
+        SELECT COUNT(*) FROM ss_user_follow WHERE USER_ID = #{userId} and  FOLLOW_USER_ID = #{authorId} and STATE = '1'
+    </select>
+
+    <insert id="saveUserFollow">
+        INSERT INTO ss_user_follow(USER_ID, FOLLOW_USER_ID, CREATE_TIME) VALUES(#{followerId}, #{authorId}, NOW())
+        ON DUPLICATE KEY UPDATE STATE = '1'
+    </insert>
+
+    <update id="cancelUserFollow">
+        UPDATE ss_user_follow SET STATE = '0' WHERE USER_ID = #{followerId} and FOLLOW_USER_ID = #{authorId}
     </update>
 </mapper>

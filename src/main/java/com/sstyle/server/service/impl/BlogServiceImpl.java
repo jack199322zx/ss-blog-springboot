@@ -47,6 +47,8 @@ public class BlogServiceImpl implements BlogService{
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
+    private int TOKEN_KEY_EXPIRE_TIME = 60 * 60 * 5 * 100;
+
     private int pageSize = 6;
 
     private Logger logger = LoggerFactory.getLogger(BlogServiceImpl.class);
@@ -125,5 +127,20 @@ public class BlogServiceImpl implements BlogService{
     public int cancelFavoriteByArticleId(long articleId, long userId) {
         userMapper.cancelUserFavorite(userId, articleId);
         return articleMapper.cancelFavoriteById(articleId);
+    }
+
+    @Override
+    public JSONResult queryLoginInfo(HttpServletRequest request) {
+        String token = request.getHeader(AUTHORIZATION_HEADER);
+        String Json = RedisClient.get(token);
+        RedisClient.expire(token, TOKEN_KEY_EXPIRE_TIME);
+        if (Json != null) {
+            User user = JSONObject.parseObject(Json, User.class);
+            User backUser = new User();
+            backUser.setUserCode(user.getUserCode());
+            backUser.setId(user.getId());
+            return new JSONResult(backUser);
+        }
+        return new JSONResult("failed");
     }
 }

@@ -11,4 +11,17 @@
         WHERE ARTICLE_ID = #{id}
     </update>
 
+    <insert id="saveArticle" >
+        INSERT INTO ss_article(ARTICLE_ID, USER_ID, ARTICLE_DESC,ARTICLE_TYPE,ARTICLE_TITLE,
+          <if test="article.articleSign !=null and article.articleSign != ''">
+              ARTICLE_SIGN,
+          </if>
+        CREATE_TIME,UPDATE_TIME)
+          VALUES(#{article.articleId}, #{user.id}, #{article.articleDesc}, #{article.articleType},#{article.articleTitle},
+          <if test="article.articleSign !=null and article.articleSign != ''">
+            #{article.articleSign},
+          </if>
+        NOW(),NOW())
+    </insert>
+
 </mapper>

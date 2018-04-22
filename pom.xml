@@ -62,10 +62,39 @@
 			<version>0.0.6</version>
 		</dependency>
 
+		<!--<dependency>-->
+			<!--<groupId>com.github.bingoohuang</groupId>-->
+			<!--<artifactId>java-utils</artifactId>-->
+			<!--<version>0.0.4-hipay</version>-->
+		<!--</dependency>-->
 		<dependency>
-			<groupId>com.github.bingoohuang</groupId>
-			<artifactId>java-utils</artifactId>
-			<version>0.0.4-hipay</version>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>fluent-hc</artifactId>
+			<version>4.5.2</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>com.vladsch.flexmark</groupId>
+			<artifactId>flexmark</artifactId>
+			<version>0.26.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.vladsch.flexmark</groupId>
+			<artifactId>flexmark-util</artifactId>
+			<version>0.26.4</version>
+		</dependency>
+		<!--表格渲染插件-->
+		<dependency>
+			<groupId>com.vladsch.flexmark</groupId>
+			<artifactId>flexmark-ext-tables</artifactId>
+			<version>0.26.4</version>
 		</dependency>
 
 		<dependency>
