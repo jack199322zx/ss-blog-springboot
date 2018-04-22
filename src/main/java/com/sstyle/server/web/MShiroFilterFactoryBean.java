@@ -15,11 +15,12 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 
 
 public class MShiroFilterFactoryBean extends ShiroFilterFactoryBean {
-    private Set<String> ignoreExt;
+    private Set<String> ignoreExt = new HashSet<>();
 
     @Override
     protected AbstractShiroFilter createInstance() throws Exception {
@@ -71,6 +72,7 @@ public class MShiroFilterFactoryBean extends ShiroFilterFactoryBean {
                 str = str.substring(idx + 1);
                 if(ignoreExt.contains(str.toLowerCase()))
                     flag = false;
+                ignoreExt.add(str.toLowerCase());
             }
             if(flag){
                 super.doFilterInternal(servletRequest, servletResponse, chain);
