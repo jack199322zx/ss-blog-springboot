@@ -25,6 +25,8 @@ public interface UserMapper {
     int saveUserFollow(@Param("authorId") long authorId, @Param("followerId") long followerId);
 
     int cancelUserFollow(@Param("authorId") long authorId, @Param("followerId") long followerId);
+
+    int saveUserAvatar(@Param("avatar") String avatar,@Param("userId") String userId);
     //    Set<String> queryRoles(String username);
 //    Set<String> queryPermissions(String staffId);
 }

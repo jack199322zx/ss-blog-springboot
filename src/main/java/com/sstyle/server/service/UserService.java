@@ -1,9 +1,12 @@
 package com.sstyle.server.service;
 
+import com.sstyle.server.domain.JSONResult;
 import com.sstyle.server.domain.StaffBean;
 import com.sstyle.server.domain.User;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,4 +20,5 @@ public interface UserService {
     Map<String, Integer> queryUserFavoriteAndFollow(long userId, long articleId, long authorId);
     int saveFollowById(long authorId, long followerId);
     int cancelFollowById(long authorId, long followerId);
+    JSONResult uploadAvatar(String map) throws IOException;
 }

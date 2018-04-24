@@ -10,10 +10,15 @@ import com.qiniu.storage.Configuration;
 import com.qiniu.storage.model.DefaultPutRet;
 import com.qiniu.util.Auth;
 import com.qiniu.util.StringMap;
+import com.qiniu.util.UrlSafeBase64;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.UUID;
 
 
 public class QiniuUtil {
@@ -22,7 +27,7 @@ public class QiniuUtil {
     private static final String SECRET_KEY = "tG0zzWjbF7ArwsfKURGDGYpdr5XQdQTRNTPrgaLA";
     //要上传的空间
     private static final String bucketname = "52nino-qiniu-cloud";
-    private static final String bucketdomain = "http://p7mtoq4re.bkt.clouddn.com";
+    private static final String bucketdomain = "http://p7mtoq4re.bkt.clouddn.com/";
     //上传到七牛后保存的文件名
     private static final String key = "xxx";
     //上传文件的路径
@@ -149,6 +154,47 @@ public class QiniuUtil {
         }
         return true;
     }
+
+
+    public static String uploadBase64(String data64){
+        String key = renamePic(".png");
+        //服务端http://up-z2.qiniup.com
+        String url = "http://upload-z2.qiniu.com/putb64/key"+ UrlSafeBase64.encodeToString(key);
+        RequestBody rb = RequestBody.create(null, data64);
+        Request request = new Request.Builder().
+                url(url).
+                addHeader("Content-Type", "application/octet-stream")
+                .addHeader("Authorization", "UpToken " + getUpToken())
+                .post(rb).build();
+        OkHttpClient client = new OkHttpClient();
+        okhttp3.Response response = null;
+        try {
+            response = client.newCall(request).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bucketdomain + key;
+    }
+
+    public static String base64Data(String data){
+
+        if(data==null||data.isEmpty()){
+            return "";
+        }
+        String base64 =data.substring(data.lastIndexOf(",")+1);
+        return base64;
+    }
+
+    /**
+     * 以UUID重命名
+     * @param fileName
+     * @return
+     */
+    public static String renamePic(String fileName){
+        String extName = fileName.substring(fileName.lastIndexOf("."));
+        return UUID.randomUUID().toString().replace("-","")+extName;
+    }
+
 
 
 

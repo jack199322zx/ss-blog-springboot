@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * @Author ss
@@ -33,4 +37,10 @@ public class UserController {
     public JSONResult cancelUserFollow(@RequestParam long authorId, @RequestParam long followerId) {
         return new JSONResult(userService.cancelFollowById(authorId, followerId));
     }
+
+    @RequestMapping(value = "/save-avatar", method = RequestMethod.POST)
+    public JSONResult cancelUserFollow(@RequestParam String avatar) throws IOException{
+        return userService.uploadAvatar(avatar);
+    }
+
 }

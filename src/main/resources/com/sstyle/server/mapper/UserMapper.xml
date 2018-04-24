@@ -33,4 +33,8 @@
     <update id="cancelUserFollow">
         UPDATE ss_user_follow SET STATE = '0' WHERE USER_ID = #{followerId} and FOLLOW_USER_ID = #{authorId}
     </update>
+
+    <update id="saveUserAvatar">
+        UPDATE ss_user SET USER_AVATAR = #{avatar} WHERE USER_ID = #{userId}
+    </update>
 </mapper>
