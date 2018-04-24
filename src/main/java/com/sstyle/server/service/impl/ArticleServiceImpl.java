@@ -34,6 +34,8 @@ public class ArticleServiceImpl implements ArticleService {
     @Value("${web.upload-path}")
     private String location;
 
+    public static final String IMG_PREFIX = "http://localhost:8988/ss-server/";
+
     private Logger logger = LoggerFactory.getLogger(ArticleServiceImpl.class);
 
 
@@ -67,7 +69,12 @@ public class ArticleServiceImpl implements ArticleService {
         logger.info("图片保存路径={}", filePath);
         String file_name = ImageUtil.saveImg(file, filePath);
         logger.info("返回文件名={}", file_name);
-        return new JSONResult(return_path + File.separator + file_name);
+        return new JSONResult(IMG_PREFIX + return_path + File.separator + file_name);
 
+    }
+    @Override
+    public JSONResult delImg(String filename) {
+        String delPath = location + File.separator + ImageUtil.getFilePath(ThreadContext.getStaffId()) + File.separator + filename;
+        return  ImageUtil.delImgFile(delPath)? new JSONResult("ok"): new JSONResult("failed");
     }
 }

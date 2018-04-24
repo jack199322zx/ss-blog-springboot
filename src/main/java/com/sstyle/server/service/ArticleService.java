@@ -12,4 +12,5 @@ import java.io.IOException;
 public interface ArticleService {
     int saveArticle(Mavon mavon);
     JSONResult backUrl(MultipartFile file) throws IOException;
+    JSONResult delImg(String filename);
 }

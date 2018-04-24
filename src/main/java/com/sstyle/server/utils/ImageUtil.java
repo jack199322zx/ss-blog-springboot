@@ -87,7 +87,7 @@ public class ImageUtil {
      */
     public static String getFilePath(String dirName) {
         //处理图片
-        String path = File.separator + "article"
+        String path = "article"
                 + File.separator + dirName
                 + File.separator + DateFormatUtils.format(new Date(), "yyyy-MM-dd");
         return path;
@@ -158,6 +158,17 @@ public class ImageUtil {
         }
         BASE64Encoder encoder = new BASE64Encoder();
         return encoder.encode(data);
+    }
+
+    public static boolean delImgFile(String path){
+        File file = new File(path);
+        if (file == null) {
+            return false;
+        }
+        if(file.exists()&&file.isFile()) {
+            return file.delete();
+        }
+        return false;
     }
 
     public static void main(String[] args) throws Exception {

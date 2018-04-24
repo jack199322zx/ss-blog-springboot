@@ -28,4 +28,10 @@ public class ArticleController {
     public JSONResult uploadImg(@RequestParam("image") MultipartFile file) throws IOException {
         return articleService.backUrl(file);
     }
+
+    @RequestMapping(value = "/img-delete", method = RequestMethod.POST)
+    public JSONResult uploadImg(@RequestParam String file){
+        return articleService.delImg(file);
+    }
+
 }
