@@ -16,6 +16,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.UUID;
@@ -158,8 +160,10 @@ public class QiniuUtil {
 
     public static String uploadBase64(String data64){
         String key = renamePic(".png");
+        data64 = base64Data(data64);
         //服务端http://up-z2.qiniup.com
-        String url = "http://upload-z2.qiniu.com/putb64/key"+ UrlSafeBase64.encodeToString(key);
+        String base64EncodeKey = UrlSafeBase64.encodeToString(key);
+        String url = "http://upload-z2.qiniu.com/putb64/-1/key/"+ base64EncodeKey;
         RequestBody rb = RequestBody.create(null, data64);
         Request request = new Request.Builder().
                 url(url).

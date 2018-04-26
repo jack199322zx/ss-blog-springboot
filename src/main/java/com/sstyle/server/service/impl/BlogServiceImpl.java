@@ -136,10 +136,7 @@ public class BlogServiceImpl implements BlogService{
         RedisClient.expire(token, TOKEN_KEY_EXPIRE_TIME);
         if (Json != null) {
             User user = JSONObject.parseObject(Json, User.class);
-            User backUser = new User();
-            backUser.setUserCode(user.getUserCode());
-            backUser.setId(user.getId());
-            return new JSONResult(backUser);
+            return new JSONResult(user);
         }
         return new JSONResult("failed");
     }

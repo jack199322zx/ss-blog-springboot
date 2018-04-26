@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sstyle.server.mapper.UserMapper">
     <select id="queryUsername" parameterType="string" resultType="com.sstyle.server.domain.User">
-        SELECT USER_ID 'id', USER_PASSWORD 'password', USER_CODE 'userCode', USER_TELEPHONE 'telephone',
-            USER_EMAIL 'email', USER_ADDRESS 'address', UPDATE_TIME 'updateTime', CREATE_TIME 'createTime'
+        SELECT USER_ID 'id', USER_PASSWORD 'password', USER_CODE 'userCode', USER_TELEPHONE 'telephone', USER_NAME 'userName',
+            USER_EMAIL 'email', USER_ADDRESS 'address', UPDATE_TIME 'updateTime', CREATE_TIME 'createTime', USER_AVATAR 'avatar'
                 FROM ss_user
                 WHERE USER_CODE = #{username}
     </select>
@@ -32,5 +32,9 @@
 
     <update id="cancelUserFollow">
         UPDATE ss_user_follow SET STATE = '0' WHERE USER_ID = #{followerId} and FOLLOW_USER_ID = #{authorId}
+    </update>
+
+    <update id="saveUserAvatar">
+        UPDATE ss_user SET USER_AVATAR = #{avatar} WHERE USER_ID = #{userId}
     </update>
 </mapper>

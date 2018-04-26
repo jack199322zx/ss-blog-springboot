@@ -48,6 +48,8 @@ public class GeetestLibController {
     @Autowired
     private RightService rightService;
 
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+
     private final String ERROR_CALLBACK = "1";
     private int EXPIRE_TIME = 60 * 60 * 5 * 100;
 
@@ -136,6 +138,7 @@ public class GeetestLibController {
                 backUser.setId(user.getId());
                 backUser.setUserCode(user.getUserCode());
                 backUser.setAddress(user.getAddress());
+                backUser.setAvatar(user.getAvatar());
                 backUser.setEmail(user.getEmail());
                 backUser.setUserName(user.getUserName());
                 RedisClient.setex(staffToken, JSONObject.toJSONString(backUser), EXPIRE_TIME);
@@ -155,7 +158,9 @@ public class GeetestLibController {
 
 
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
-    public JSONResult doLogout() {
+    public JSONResult doLogout(HttpServletRequest request) {
+        String token = request.getHeader(AUTHORIZATION_HEADER);
+        RedisClient.del(token);
         SecurityUtils.getSubject().logout();
         return new JSONResult("您已安全退出");
     }

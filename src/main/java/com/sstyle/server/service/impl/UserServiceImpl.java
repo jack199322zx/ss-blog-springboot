@@ -1,18 +1,23 @@
 package com.sstyle.server.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.sstyle.server.domain.JSONResult;
 import com.sstyle.server.domain.User;
 import com.sstyle.server.mapper.UserMapper;
 import com.sstyle.server.service.UserService;
 import com.sstyle.server.utils.MapUtils;
 import com.sstyle.server.utils.QiniuUtil;
+import com.sstyle.server.utils.RedisClient;
 import com.sstyle.server.utils.ThreadContext;
+import org.hibernate.validator.internal.constraintvalidators.bv.past.PastValidatorForReadableInstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +30,10 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     private UserMapper userMapper;
+
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+
+    private int EXPIRE_TIME = 100 * 60 * 60 * 5;
 
     private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -61,7 +70,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public JSONResult uploadAvatar(String base64) throws IOException{
+    public JSONResult uploadAvatar(String base64, HttpServletRequest request) throws IOException{
         if (base64 == null) {
             return new JSONResult("failed");
         }
@@ -69,6 +78,12 @@ public class UserServiceImpl implements UserService{
         logger.info("backHash========={}", backHash);
         String userId = ThreadContext.getStaffId();
         userMapper.saveUserAvatar(backHash, userId);
+        //更新redis，用户上传的头像
+        String authToken = request.getHeader(AUTHORIZATION_HEADER);
+        String json = RedisClient.getAndDel(authToken);
+        User user = JSONObject.parseObject(json, User.class);
+        user.setAvatar(backHash);
+        RedisClient.setex(authToken, JSON.toJSONString(user), EXPIRE_TIME);
         return new JSONResult(backHash);
     }
 }

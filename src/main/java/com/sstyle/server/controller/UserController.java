@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Map;
 
@@ -39,8 +40,8 @@ public class UserController {
     }
 
     @RequestMapping(value = "/save-avatar", method = RequestMethod.POST)
-    public JSONResult cancelUserFollow(@RequestParam String avatar) throws IOException{
-        return userService.uploadAvatar(avatar);
+    public JSONResult cancelUserFollow(@RequestParam String avatar, HttpServletRequest request) throws IOException{
+        return userService.uploadAvatar(avatar, request);
     }
 
 }
