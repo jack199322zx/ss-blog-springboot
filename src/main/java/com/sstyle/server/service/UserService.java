@@ -18,8 +18,8 @@ public interface UserService {
     User findByUsercode(String userCode); //根据用户名查找用户
     Set<String> findRoles(String username);// 根据用户名查找其角色
     Set<String> findPermissions(String staffId);// 根据用户名查找其权限
-    Map<String, Integer> queryUserFavoriteAndFollow(long userId, long articleId, long authorId);
-    int saveFollowById(long authorId, long followerId);
-    int cancelFollowById(long authorId, long followerId);
+    Map<String, Integer> queryUserFavoriteAndFollow(String userId, String articleId, String authorId);
+    int saveFollowById(String authorId, String followerId);
+    int cancelFollowById(String authorId, String followerId);
     JSONResult uploadAvatar(String map, HttpServletRequest request) throws IOException;
 }

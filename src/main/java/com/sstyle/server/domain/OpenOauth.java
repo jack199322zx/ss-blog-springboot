@@ -6,9 +6,9 @@ package com.sstyle.server.domain;
  * @author ss on 2018/4/12.
  */
 public class OpenOauth {
-    private long id;
+    private String id;
 
-    private long userId; // 系统中的用户ID
+    private String userId; // 系统中的用户ID
 
     private int oauthType; // 认证类型：QQ、新浪、微信
 
@@ -28,19 +28,19 @@ public class OpenOauth {
     private String email;
     private String avatar;
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

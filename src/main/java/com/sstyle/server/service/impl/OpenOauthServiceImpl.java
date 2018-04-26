@@ -32,12 +32,12 @@ public class OpenOauthServiceImpl implements OpenOauthService {
     }
 
     @Override
-    public OpenOauth getOauthByUid(long userId) {
+    public OpenOauth getOauthByUid(String userId) {
         return null;
     }
 
     @Override
-    public boolean checkIsOriginalPassword(long userId) {
+    public boolean checkIsOriginalPassword(String userId) {
         return false;
     }
 

@@ -17,6 +17,6 @@ public interface BlogMapper {
     List<Flag> queryTecFlags();
     List<Article> queryAllArticlesByDist(int dist);
     Article queryArticleDetailById(String articleId);
-    int queryPublishArticleNum(long userId);
+    int queryPublishArticleNum(String userId);
     int updateViewNum(@Param("viewNum") int viewNum, @Param("articleId") String articleId);
 }

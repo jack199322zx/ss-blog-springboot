@@ -14,7 +14,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class User implements Serializable{
 
-    private Long id;
+    private String id;
     private String password;
     private String userName;
     private String userCode;

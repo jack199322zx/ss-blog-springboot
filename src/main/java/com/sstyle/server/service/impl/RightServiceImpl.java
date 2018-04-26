@@ -18,7 +18,7 @@ public class RightServiceImpl implements RightService{
     private RightMapper rightMapper;
 
     @Override
-    public List<Right> findRights(Long userId) {
+    public List<Right> findRights(String userId) {
         return rightMapper.queryRights(userId);
     }
 }

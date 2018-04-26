@@ -53,19 +53,19 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Map<String, Integer> queryUserFavoriteAndFollow(long userId, long articleId, long authorId) {
+    public Map<String, Integer> queryUserFavoriteAndFollow(String userId, String articleId, String authorId) {
         Integer favorite = userMapper.queryUserFavorite(userId, articleId);
         Integer follow = userMapper.queryUserFollow(authorId, userId);
         return MapUtils.of("favorite", favorite, "follow", follow);
     }
 
     @Override
-    public int saveFollowById(long authorId, long followerId) {
+    public int saveFollowById(String authorId, String followerId) {
         return userMapper.saveUserFollow(authorId, followerId);
     }
 
     @Override
-    public int cancelFollowById(long authorId, long followerId) {
+    public int cancelFollowById(String authorId, String followerId) {
         return userMapper.cancelUserFollow(authorId, followerId);
     }
 

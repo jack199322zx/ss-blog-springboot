@@ -15,7 +15,7 @@ import java.util.Map;
 @Data
 public class Article implements Serializable{
 
-    private long articleId;
+    private String articleId;
     private User user;
     private String articleTitle;
     private String articleSign;

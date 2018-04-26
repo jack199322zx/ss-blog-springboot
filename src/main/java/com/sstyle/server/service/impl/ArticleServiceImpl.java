@@ -1,14 +1,12 @@
 package com.sstyle.server.service.impl;
 
 import com.sstyle.server.domain.Article;
+import com.sstyle.server.domain.Flag;
 import com.sstyle.server.domain.JSONResult;
 import com.sstyle.server.domain.Mavon;
 import com.sstyle.server.mapper.ArticleMapper;
 import com.sstyle.server.service.ArticleService;
-import com.sstyle.server.utils.AFAdminContext;
-import com.sstyle.server.utils.ImageUtil;
-import com.sstyle.server.utils.MarkdownUtil;
-import com.sstyle.server.utils.ThreadContext;
+import com.sstyle.server.utils.*;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Id;
 import org.slf4j.Logger;
@@ -16,10 +14,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -40,15 +41,20 @@ public class ArticleServiceImpl implements ArticleService {
 
 
     @Override
+    @Transactional
     public int saveArticle(Mavon mavon) {
         String markdown2Html = MarkdownUtil.ofContent(mavon.getMarkdown()).toString();
+        String backImg = QiniuUtil.uploadBase64(mavon.getArticleImg());
         Article article = new Article();
         article.setArticleTitle(mavon.getTitle());
+        article.setArticleImg(backImg);
         article.setArticleDesc(markdown2Html);
         article.setArticleSign(Optional.ofNullable(mavon.getSign()).orElse(""));
-        article.setArticleId(Id.next());
+        long articleId = Id.next();
+        article.setArticleId(String.valueOf(articleId));
         article.setFlagList(mavon.getFlagList());
         article.setArticleType(mavon.getChannelId());
+        mavon.getFlagList().stream().forEach(flag -> articleMapper.saveFlagByArticle(String.valueOf(articleId), flag.getFlagId()));
         return articleMapper.saveArticle(article, mavon.getUser());
     }
 
@@ -76,5 +82,10 @@ public class ArticleServiceImpl implements ArticleService {
     public JSONResult delImg(String filename) {
         String delPath = location + File.separator + ImageUtil.getFilePath(ThreadContext.getStaffId()) + File.separator + filename;
         return  ImageUtil.delImgFile(delPath)? new JSONResult("ok"): new JSONResult("failed");
+    }
+
+    @Override
+    public Map<String, Object> queryFlagByDist(int dist) {
+        return MapUtils.of("flagList", articleMapper.queryFlagByDist(dist));
     }
 }

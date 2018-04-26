@@ -25,17 +25,17 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(value = "/query-favorite-follow", method = RequestMethod.POST)
-    public JSONResult queryUserFavorite(@RequestParam long articleId, @RequestParam long userId, @RequestParam long authorId) {
+    public JSONResult queryUserFavorite(@RequestParam String articleId, @RequestParam String userId, @RequestParam String authorId) {
         return new JSONResult(userService.queryUserFavoriteAndFollow(userId, articleId, authorId));
     }
 
     @RequestMapping(value = "/save-follow", method = RequestMethod.POST)
-    public JSONResult saveUserFollow(@RequestParam long authorId, @RequestParam long followerId) {
+    public JSONResult saveUserFollow(@RequestParam String authorId, @RequestParam String followerId) {
         return new JSONResult(userService.saveFollowById(authorId, followerId));
     }
 
     @RequestMapping(value = "/cancel-follow", method = RequestMethod.POST)
-    public JSONResult cancelUserFollow(@RequestParam long authorId, @RequestParam long followerId) {
+    public JSONResult cancelUserFollow(@RequestParam String authorId, @RequestParam String followerId) {
         return new JSONResult(userService.cancelFollowById(authorId, followerId));
     }
 

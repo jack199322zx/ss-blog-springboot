@@ -16,9 +16,9 @@ public interface OpenOauthService {
     
     OpenOauth getOauthByOauthUserId(String oauthUserId);
 
-    OpenOauth getOauthByUid(long userId);
+    OpenOauth getOauthByUid(String userId);
 
-    boolean checkIsOriginalPassword(long userId);
+    boolean checkIsOriginalPassword(String userId);
 
     void saveOauthToken(OpenOauth oauth);
 

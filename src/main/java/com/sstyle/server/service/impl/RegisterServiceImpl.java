@@ -90,7 +90,7 @@ public class RegisterServiceImpl implements RegisterService {
                 throw new UserExistException();
             }
         }
-        registerMapper.saveUserRole(userId, PRIMARY_USER_ROLE_ID);
+        registerMapper.saveUserRole(String.valueOf(userId), PRIMARY_USER_ROLE_ID);
         return new JSONResult("ok");
     }
 

@@ -8,6 +8,6 @@ import java.util.List;
  * Created by ss on 2018/3/27.
  */
 public interface RightMapper {
-    List<Right> queryRights(Long userId);
+    List<Right> queryRights(String userId);
 
 }

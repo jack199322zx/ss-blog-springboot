@@ -11,6 +11,6 @@ import java.util.Map;
 public interface RegisterMapper {
     int saveUserByEmail(@Param("params") Map params);
     int saveUserByPhone(@Param("params") Map params);
-    int saveUserRole(@Param("userId") long userId, @Param("roleId") String roleId);
+    int saveUserRole(@Param("userId") String userId, @Param("roleId") String roleId);
     int updateActiveUser(String userId);
 }

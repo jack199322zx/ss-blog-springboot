@@ -34,4 +34,8 @@ public class ArticleController {
         return articleService.delImg(file);
     }
 
+    @RequestMapping(value = "/queryFlagByDist", method = RequestMethod.POST)
+    public JSONResult queryArticleByDist(@RequestParam int dist){
+        return new JSONResult(articleService.queryFlagByDist(dist));
+    }
 }

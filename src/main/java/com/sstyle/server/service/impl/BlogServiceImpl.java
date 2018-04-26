@@ -117,14 +117,14 @@ public class BlogServiceImpl implements BlogService{
 
     @Override
     @Transactional
-    public int saveFavoriteByArticleId(long articleId, long userId) {
+    public int saveFavoriteByArticleId(String articleId, String userId) {
         userMapper.saveUserFavorite(userId, articleId);
         return articleMapper.saveFavoriteById(articleId);
     }
 
     @Override
     @Transactional
-    public int cancelFavoriteByArticleId(long articleId, long userId) {
+    public int cancelFavoriteByArticleId(String articleId, String userId) {
         userMapper.cancelUserFavorite(userId, articleId);
         return articleMapper.cancelFavoriteById(articleId);
     }

@@ -4,7 +4,7 @@
 <mapper namespace="com.sstyle.server.mapper.BlogMapper">
     <!-- 返回javaBean对象 -->
     <resultMap type="com.sstyle.server.domain.Article" id="articleMap">
-        <id column="ARTICLE_ID" property="articleId" javaType="long"/>
+        <id column="ARTICLE_ID" property="articleId" javaType="string"/>
         <result column="AUTHOR_REC" property="authorRec" javaType="int"/>
         <result column="VIEW_NUM" property="viewNum" javaType="int"/>
         <result column="UPDATE_TIME" property="updateTime" javaType="java.sql.Timestamp"/>
@@ -74,7 +74,7 @@
         limit #{start}, #{end}
     </select>
 
-    <select id="findFlags" parameterType="long" resultMap="flagMap">
+    <select id="findFlags" parameterType="string" resultMap="flagMap">
         SELECT sf.FLAG_ID, sf.FLAG_DIST , sf.FLAG_TYPE, sf.FLAG_TYPE_DESC, sf.FLAG_INFO  from ss_flag sf, ss_article_flag saf
         WHERE saf.ARTICLE_ID = #{ARTICLE_ID}
         and saf.FLAG_ID = sf.FLAG_ID
@@ -106,7 +106,7 @@
         and su.STATE = '1'
     </select>
 
-    <select id="queryPublishArticleNum" parameterType="long" resultType="int">
+    <select id="queryPublishArticleNum" parameterType="string" resultType="int">
         SELECT COUNT(*) FROM ss_article WHERE USER_ID = #{id}
     </select>
 

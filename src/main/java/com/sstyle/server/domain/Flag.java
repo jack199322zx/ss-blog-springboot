@@ -11,7 +11,7 @@ import java.util.List;
  */
 @Data
 public class Flag implements Serializable{
-    private long articleId;
+    private String articleId;
     private int flagId;
     private int flagDistrict;
     private int flagType;

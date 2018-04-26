@@ -1,27 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sstyle.server.mapper.ArticleMapper">
-    <update id="saveFavoriteById" parameterType="long">
+
+    <resultMap id="flagMap" type="com.sstyle.server.domain.Flag">
+        <result column="FLAG_ID" property="flagId" javaType="int"/>
+        <result column="FLAG_DIST" property="flagDistrict" javaType="int"/>
+        <result column="FLAG_TYPE" property="flagType" javaType="int"/>
+        <result column="FLAG_TYPE_DESC" property="flagTypeDesc" javaType="string"/>
+        <result column="FLAG_INFO" property="flagInfo" javaType="string"/>
+        <result column="CREATE_TIME" property="createTime" javaType="java.sql.Timestamp"/>
+        <result column="STATE" property="state" javaType="string"/>
+    </resultMap>
+
+    <update id="saveFavoriteById" parameterType="string">
       UPDATE ss_article SET FAVORITE_NUM = FAVORITE_NUM + 1
         WHERE ARTICLE_ID = #{id}
     </update>
 
-    <update id="cancelFavoriteById" parameterType="long">
+    <update id="cancelFavoriteById" parameterType="string">
         UPDATE ss_article SET FAVORITE_NUM = FAVORITE_NUM - 1
         WHERE ARTICLE_ID = #{id}
     </update>
 
-    <insert id="saveArticle" >
+    <insert id="saveArticle">
         INSERT INTO ss_article(ARTICLE_ID, USER_ID, ARTICLE_DESC,ARTICLE_TYPE,ARTICLE_TITLE,
-          <if test="article.articleSign !=null and article.articleSign != ''">
-              ARTICLE_SIGN,
-          </if>
+        <if test="article.articleSign !=null and article.articleSign != ''">
+            ARTICLE_SIGN,
+        </if>
+        <if test="article.articleImg !=null and article.articleImg != ''">
+            ARTICLE_IMG,
+        </if>
         CREATE_TIME,UPDATE_TIME)
-          VALUES(#{article.articleId}, #{user.id}, #{article.articleDesc}, #{article.articleType},#{article.articleTitle},
-          <if test="article.articleSign !=null and article.articleSign != ''">
+        VALUES(#{article.articleId}, #{user.id}, #{article.articleDesc}, #{article.articleType},#{article.articleTitle},
+        <if test="article.articleSign !=null and article.articleSign != ''">
             #{article.articleSign},
-          </if>
+        </if>
+        <if test="article.articleImg !=null and article.articleImg != ''">
+            #{article.articleImg},
+        </if>
         NOW(),NOW())
     </insert>
 
+    <select id="queryFlagByDist" parameterType="int" resultMap="flagMap">
+        SELECT FLAG_ID, FLAG_DIST , FLAG_TYPE, FLAG_TYPE_DESC, FLAG_INFO
+        FROM ss_flag
+        WHERE STATE = '1'
+        AND FLAG_DIST = #{dist}
+    </select>
+
+    <insert id="saveFlagByArticle">
+        INSERT INTO ss_article_flag(ARTICLE_ID, FLAG_ID, CREATE_TIME) VALUES(#{articleId}, #{flagId}, NOW())
+    </insert>
 </mapper>

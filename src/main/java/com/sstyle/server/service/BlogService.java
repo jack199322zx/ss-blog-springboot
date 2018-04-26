@@ -16,6 +16,6 @@ public interface BlogService {
     Map<String, Object> initBlogList();
     JSONResult queryLoginInfo(HttpServletRequest request);
     Map<String, Object> queryArticleDetail(String articleId);
-    int saveFavoriteByArticleId(long articleId, long userId);
-    int cancelFavoriteByArticleId(long articleId, long userId);
+    int saveFavoriteByArticleId(String articleId, String userId);
+    int cancelFavoriteByArticleId(String articleId, String userId);
 }

@@ -14,17 +14,17 @@ import java.util.Set;
 public interface UserMapper {
     User queryUsername(String username);
 
-    int saveUserFavorite(@Param("userId") long userId, @Param("articleId") long articleId);
+    int saveUserFavorite(@Param("userId") String userId, @Param("articleId") String articleId);
 
-    int cancelUserFavorite(@Param("userId") long userId, @Param("articleId") long articleId);
+    int cancelUserFavorite(@Param("userId") String userId, @Param("articleId") String articleId);
 
-    int queryUserFavorite(@Param("userId") long userId, @Param("articleId") long articleId);
+    int queryUserFavorite(@Param("userId") String userId, @Param("articleId") String articleId);
 
-    int queryUserFollow(@Param("authorId") long authorId, @Param("userId") long userId);
+    int queryUserFollow(@Param("authorId") String authorId, @Param("userId") String userId);
 
-    int saveUserFollow(@Param("authorId") long authorId, @Param("followerId") long followerId);
+    int saveUserFollow(@Param("authorId") String authorId, @Param("followerId") String followerId);
 
-    int cancelUserFollow(@Param("authorId") long authorId, @Param("followerId") long followerId);
+    int cancelUserFollow(@Param("authorId") String authorId, @Param("followerId") String followerId);
 
     int saveUserAvatar(@Param("avatar") String avatar,@Param("userId") String userId);
     //    Set<String> queryRoles(String username);
