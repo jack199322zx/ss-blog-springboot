@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sstyle.server.mapper.RightMapper">
-    <select id="queryRights" parameterType="long" resultType="com.sstyle.server.domain.Right">
+    <select id="queryRights" parameterType="string" resultType="com.sstyle.server.domain.Right">
         SELECT RIGHT_NAME 'name', RIGHT_DESC 'desc', RIGHT_TYPE 'type', UPDATE_TIME 'updateTime', CREATE_TIME 'createTime'
         FROM ss_sys_right
         WHERE RIGHT_ID = (

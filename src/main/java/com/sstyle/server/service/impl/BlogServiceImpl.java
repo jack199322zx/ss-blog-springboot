@@ -1,15 +1,13 @@
 package com.sstyle.server.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.sstyle.server.domain.Article;
-import com.sstyle.server.domain.Flag;
-import com.sstyle.server.domain.JSONResult;
-import com.sstyle.server.domain.User;
+import com.sstyle.server.domain.*;
 import com.sstyle.server.mapper.ArticleMapper;
 import com.sstyle.server.mapper.BlogMapper;
 import com.sstyle.server.mapper.UserMapper;
 import com.sstyle.server.service.BaseService;
 import com.sstyle.server.service.BlogService;
+import com.sstyle.server.service.CommentService;
 import com.sstyle.server.utils.MapUtils;
 import com.sstyle.server.utils.RedisClient;
 import org.apache.commons.collections.map.HashedMap;
@@ -44,6 +42,9 @@ public class BlogServiceImpl implements BlogService{
 
     @Autowired
     private BaseService baseService;
+
+    @Autowired
+    private CommentService commentService;
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
@@ -107,11 +108,21 @@ public class BlogServiceImpl implements BlogService{
         List<Article> viewNumSortedList = baseService.queryArticlesByViewNum(articleList, pageSize);
         List<Article> createTimeSortedList = baseService.queryArticlesByCreateTime(articleList, pageSize);
         List<Article> newCommentsSortedList = baseService.queryArticlesByNewComments(articleList, pageSize);
+        List<Comment> commentsList = commentService.queryCommentsByArticleId(articleId);
+        List<Comment> filterCommentsList = commentsList.stream().map(comm -> {
+            List<Comment> list = commentsList.stream().filter(c -> c.getCommentId().equals(comm.getReceiveCommentId())).collect(Collectors.toList());
+            if (list !=null && list.size()> 0) {
+                Comment coment = list.get(0);
+                comm.setReceiveComment(coment);
+            }
+            return comm;
+        }).collect(Collectors.toList());
         return MapUtils.of("article", article,
                 "publishNum", num,
                 "viewNumSortedList", viewNumSortedList,
                 "createTimeSortedList", createTimeSortedList,
-                "newCommentsSortedList", newCommentsSortedList
+                "newCommentsSortedList", newCommentsSortedList,
+                "commentList", filterCommentsList
                 );
     }
 
