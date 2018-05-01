@@ -18,5 +18,7 @@ public interface BlogMapper {
     List<Article> queryAllArticlesByDist(int dist);
     Article queryArticleDetailById(String articleId);
     int queryPublishArticleNum(String userId);
+    int queryCommentsNum(String userId);
     int updateViewNum(@Param("viewNum") int viewNum, @Param("articleId") String articleId);
+    int updateCommentsNum(@Param("commentsNum") int commentsNum, @Param("articleId") String articleId);
 }

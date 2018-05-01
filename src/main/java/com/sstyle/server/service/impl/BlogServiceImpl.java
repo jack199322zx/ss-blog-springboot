@@ -1,6 +1,8 @@
 package com.sstyle.server.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.sstyle.server.context.SpringContextHolder;
+import com.sstyle.server.context.event.NotifyEvent;
 import com.sstyle.server.domain.*;
 import com.sstyle.server.mapper.ArticleMapper;
 import com.sstyle.server.mapper.BlogMapper;
@@ -10,6 +12,7 @@ import com.sstyle.server.service.BlogService;
 import com.sstyle.server.service.CommentService;
 import com.sstyle.server.utils.MapUtils;
 import com.sstyle.server.utils.RedisClient;
+import com.sstyle.server.web.constants.Constants;
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,12 +36,6 @@ public class BlogServiceImpl implements BlogService{
 
     @Autowired
     private BlogMapper blogMapper;
-
-    @Autowired
-    private ArticleMapper articleMapper;
-
-    @Autowired
-    private UserMapper userMapper;
 
     @Autowired
     private BaseService baseService;
@@ -73,11 +70,11 @@ public class BlogServiceImpl implements BlogService{
         List<Flag> flagList = baseService.queryAllFlags();
         List<Article> viewNumSortedList = baseService.queryArticlesByViewNum(articleList, pageSize);
         List<Article> createTimeSortedList = baseService.queryArticlesByCreateTime(articleList, pageSize);
-        List<Article> newCommentsSortedList = baseService.queryArticlesByNewComments(articleList, pageSize);
+        List<Article> commentsSortedList = baseService.queryArticlesByComments(articleList, pageSize);
         return MapUtils.of("flagList", flagList,
                 "viewNumSortedList", viewNumSortedList,
                 "createTimeSortedList", createTimeSortedList,
-                "newCommentsSortedList", newCommentsSortedList,
+                "newCommentsSortedList", commentsSortedList,
                 "articleDistList", articleDistList,
                 "pageCount", pageCount);
 
@@ -98,47 +95,36 @@ public class BlogServiceImpl implements BlogService{
 
     @Override
     @Transactional
-    public Map<String, Object> queryArticleDetail(String articleId) {
+    public Map<Object, Object> queryArticleDetail(String articleId) {
         Article article = blogMapper.queryArticleDetailById(articleId);
         int viewNum = article.getViewNum() + 1;
         blogMapper.updateViewNum(viewNum, articleId);
         article.setViewNum(viewNum);
-        int num = blogMapper.queryPublishArticleNum(article.getUser().getId());
+        int publishNum = blogMapper.queryPublishArticleNum(article.getUser().getId());
+        int commentsNum = blogMapper.queryCommentsNum(article.getUser().getId());
         List<Article> articleList = baseService.queryAllArticles();
         List<Article> viewNumSortedList = baseService.queryArticlesByViewNum(articleList, pageSize);
         List<Article> createTimeSortedList = baseService.queryArticlesByCreateTime(articleList, pageSize);
-        List<Article> newCommentsSortedList = baseService.queryArticlesByNewComments(articleList, pageSize);
+        List<Article> commentsSortedList = baseService.queryArticlesByComments(articleList, pageSize);
         List<Comment> commentsList = commentService.queryCommentsByArticleId(articleId);
         List<Comment> filterCommentsList = commentsList.stream().map(comm -> {
-            List<Comment> list = commentsList.stream().filter(c -> c.getCommentId().equals(comm.getReceiveCommentId())).collect(Collectors.toList());
+            List<Comment> list = commentsList.stream().filter(c -> c.getCommentId().equals(comm.getToCommentId())).collect(Collectors.toList());
             if (list !=null && list.size()> 0) {
                 Comment coment = list.get(0);
-                comm.setReceiveComment(coment);
+                comm.setToComment(coment);
             }
             return comm;
         }).collect(Collectors.toList());
-        return MapUtils.of("article", article,
-                "publishNum", num,
+        return MapUtils.asMap("article", article,
+                "publishNum", publishNum,
+                "commentsNum", commentsNum,
                 "viewNumSortedList", viewNumSortedList,
                 "createTimeSortedList", createTimeSortedList,
-                "newCommentsSortedList", newCommentsSortedList,
+                "commentsSortedList", commentsSortedList,
                 "commentList", filterCommentsList
                 );
     }
 
-    @Override
-    @Transactional
-    public int saveFavoriteByArticleId(String articleId, String userId) {
-        userMapper.saveUserFavorite(userId, articleId);
-        return articleMapper.saveFavoriteById(articleId);
-    }
-
-    @Override
-    @Transactional
-    public int cancelFavoriteByArticleId(String articleId, String userId) {
-        userMapper.cancelUserFavorite(userId, articleId);
-        return articleMapper.cancelFavoriteById(articleId);
-    }
 
     @Override
     public JSONResult queryLoginInfo(HttpServletRequest request) {

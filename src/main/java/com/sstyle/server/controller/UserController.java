@@ -44,4 +44,13 @@ public class UserController {
         return userService.uploadAvatar(avatar, request);
     }
 
+    @RequestMapping(value = "/save-favorite", method = RequestMethod.POST)
+    public JSONResult saveFavorite(@RequestParam String articleId, @RequestParam String userId) {
+        return new JSONResult(userService.saveFavoriteByArticleId(articleId, userId));
+    }
+
+    @RequestMapping(value = "/cancel-favorite", method = RequestMethod.POST)
+    public JSONResult cancelFavorite(@RequestParam String articleId, @RequestParam String userId) {
+        return new JSONResult(userService.cancelFavoriteByArticleId(articleId, userId));
+    }
 }

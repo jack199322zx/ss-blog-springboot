@@ -1,9 +1,9 @@
 package com.sstyle.server.service.impl;
 
-import com.sstyle.server.domain.Article;
-import com.sstyle.server.domain.Flag;
-import com.sstyle.server.domain.JSONResult;
-import com.sstyle.server.domain.Mavon;
+import com.sstyle.server.context.SpringContextHolder;
+import com.sstyle.server.context.event.FeedsEvent;
+import com.sstyle.server.context.event.NotifyEvent;
+import com.sstyle.server.domain.*;
 import com.sstyle.server.mapper.ArticleMapper;
 import com.sstyle.server.service.ArticleService;
 import com.sstyle.server.utils.*;
@@ -55,6 +55,7 @@ public class ArticleServiceImpl implements ArticleService {
         article.setFlagList(mavon.getFlagList());
         article.setArticleType(mavon.getChannelId());
         mavon.getFlagList().stream().forEach(flag -> articleMapper.saveFlagByArticle(String.valueOf(articleId), flag.getFlagId()));
+        publishEvent(String.valueOf(articleId), mavon.getUser());
         return articleMapper.saveArticle(article, mavon.getUser());
     }
 
@@ -88,4 +89,16 @@ public class ArticleServiceImpl implements ArticleService {
     public Map<String, Object> queryFlagByDist(int dist) {
         return MapUtils.of("flagList", articleMapper.queryFlagByDist(dist));
     }
+
+    /**
+     * 发布事件
+     * @return
+     */
+    private void publishEvent(String articleId, User user) {
+        FeedsEvent feedsEvent = new FeedsEvent("FeedsEvent");
+        feedsEvent.setAssociateId(articleId);
+        feedsEvent.setFromUserId(user.getId());
+        SpringContextHolder.publishEvent(feedsEvent);
+    }
+
 }

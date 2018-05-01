@@ -11,6 +11,6 @@ import java.util.List;
  */
 public interface CommentMapper {
     List<Comment> queryCommentsByArticle(String articleId);
-    int saveComment(Comment comment);
-    int updateCommentByReceiveId(@Param("receiveCommentId") String receiveCommentId,@Param("commentId") String commentId);
+    int saveComment(@Param("comment") Comment comment);
+    Comment findCommentById(String commentId);
 }

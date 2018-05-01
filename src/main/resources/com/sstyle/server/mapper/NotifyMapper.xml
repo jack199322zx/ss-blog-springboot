@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sstyle.server.mapper.NotifyMapper">
+
+    <resultMap id="flagMap" type="com.sstyle.server.domain.Flag">
+        <result column="FLAG_ID" property="flagId" javaType="int"/>
+        <result column="FLAG_DIST" property="flagDistrict" javaType="int"/>
+        <result column="FLAG_TYPE" property="flagType" javaType="int"/>
+        <result column="FLAG_TYPE_DESC" property="flagTypeDesc" javaType="string"/>
+        <result column="FLAG_INFO" property="flagInfo" javaType="string"/>
+        <result column="CREATE_TIME" property="createTime" javaType="java.sql.Timestamp"/>
+        <result column="STATE" property="state" javaType="string"/>
+    </resultMap>
+
+    <insert id="saveNotify" parameterType="com.sstyle.server.domain.Notify">
+      INSERT INTO ss_notify(EVENT_TYPE,CREATE_TIME,TO_ID,FROM_ID,ASSOCIATION_ID,NOTIFY_ID) VALUES(#{eventType},
+      NOW(),#{toId},#{fromId},#{associationId},#{notifyId})
+    </insert>
+</mapper>

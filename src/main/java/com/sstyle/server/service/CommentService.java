@@ -10,5 +10,6 @@ import java.util.List;
  */
 public interface CommentService {
     List<Comment> queryCommentsByArticleId(String articleId);
-    int saveComment(Comment comment, String commentId);
+    Comment saveComment(Comment comment);
+    Comment findCommentById(String commentId);
 }

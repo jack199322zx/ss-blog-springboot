@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sstyle.server.mapper.HomeMapper">
+    <select id="queryDynamicsById" parameterType="string" resultType="com.sstyle.server.domain.Feeds">
+      SELECT FEEDS_ID 'feedsId', FROM_ID 'fromId', TO_ID 'toId', ASSOCIATION_ID 'associationId', STATE 'state',
+      CREATE_TIME 'createTime', FEEDS_TYPE 'feedsType'
+        FROM ss_feeds
+        WHERE TO_ID = #{id}
+        AND STATE = '0'
+    </select>
+
+    <select id="queryMyArticlesById" parameterType="string" resultType="com.sstyle.server.domain.Article">
+        SELECT sa.AUTHOR_REC 'authorRec', sa.VIEW_NUM 'viewNum', sa.COMMENTS_NUM 'commentsNum', sa.UPDATE_TIME 'updateTime',
+        sa.CREATE_TIME 'createTime', sa.ARTICLE_IMG 'articleImg', sa.ARTICLE_TYPE 'articleType', sa.ARTICLE_DESC 'articleDesc',
+        sa.ARTICLE_TITLE 'articleTitle', CAST(sa.ARTICLE_ID as char) 'articleId'
+        FROM ss_article sa
+        WHERE sa.USER_ID = #{id}
+    </select>
+
+    <select id="queryMyCommentsById" parameterType="string" resultType="com.sstyle.server.domain.Comment">
+        SELECT COMMENT_ID 'commentId',USER_ID 'userId', ARTICLE_ID 'articleId', COMMENT_CONTENT 'commentContent', TO_COMMENT_ID 'toCommentId'
+        FROM ss_article_comments
+        WHERE USER_ID = #{id}
+        AND STATE = '1'
+    </select>
+
+    <select id="queryMyNotifyById" parameterType="string" resultType="com.sstyle.server.domain.Notify">
+        SELECT NOTIFY_ID 'notifyId',ASSOCIATION_ID 'associationId', FROM_ID 'fromId', TO_ID 'toId', CREATE_TIME 'createTime',
+        EVENT_TYPE 'eventType'
+        FROM ss_notify
+        WHERE TO_ID = #{id}
+        AND STATE = '0'
+    </select>
+</mapper>

@@ -2,19 +2,24 @@ package com.sstyle.server.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.sstyle.server.context.SpringContextHolder;
+import com.sstyle.server.context.event.NotifyEvent;
 import com.sstyle.server.domain.JSONResult;
 import com.sstyle.server.domain.User;
+import com.sstyle.server.mapper.ArticleMapper;
 import com.sstyle.server.mapper.UserMapper;
 import com.sstyle.server.service.UserService;
 import com.sstyle.server.utils.MapUtils;
 import com.sstyle.server.utils.QiniuUtil;
 import com.sstyle.server.utils.RedisClient;
 import com.sstyle.server.utils.ThreadContext;
+import com.sstyle.server.web.constants.Constants;
 import org.hibernate.validator.internal.constraintvalidators.bv.past.PastValidatorForReadableInstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +35,9 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private ArticleMapper articleMapper;
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
@@ -61,6 +69,11 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public int saveFollowById(String authorId, String followerId) {
+        NotifyEvent notifyEvent = new NotifyEvent("NotifyEvent");
+        notifyEvent.setEventType(Constants.NOTIFY_EVENT_FOLLOW);
+        notifyEvent.setFromUserId(followerId);
+        notifyEvent.setToUserId(authorId);
+        SpringContextHolder.publishEvent(notifyEvent);
         return userMapper.saveUserFollow(authorId, followerId);
     }
 
@@ -85,5 +98,29 @@ public class UserServiceImpl implements UserService{
         user.setAvatar(backHash);
         RedisClient.setex(authToken, JSON.toJSONString(user), EXPIRE_TIME);
         return new JSONResult(backHash);
+    }
+    @Override
+    @Transactional
+    public int saveFavoriteByArticleId(String articleId, String userId) {
+        userMapper.saveUserFavorite(userId, articleId);
+        NotifyEvent notifyEvent = new NotifyEvent("NotifyEvent");
+        notifyEvent.setAssociateId(articleId);
+        notifyEvent.setEventType(Constants.NOTIFY_EVENT_FAVOR_POST);
+        notifyEvent.setFromUserId(userId);
+        //此处不知道作者，让通知事件处理器补全
+        SpringContextHolder.publishEvent(notifyEvent);
+        return articleMapper.saveFavoriteById(articleId);
+    }
+
+    @Override
+    @Transactional
+    public int cancelFavoriteByArticleId(String articleId, String userId) {
+        userMapper.cancelUserFavorite(userId, articleId);
+        return articleMapper.cancelFavoriteById(articleId);
+    }
+
+    @Override
+    public User queryUserInfo(String userId) {
+        return userMapper.queryUserInfo(userId);
     }
 }

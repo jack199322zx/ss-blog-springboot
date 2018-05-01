@@ -59,12 +59,12 @@ public class BaseServiceImpl implements BaseService{
     }
 
     @Override
-    public List<Article> queryArticlesByNewComments(List<Article> articleList, int pageSize) {
-        List<Article> newCommentsSortedList = articleList.stream()
-                .sorted((article1, article2) -> article2.getUpdateTime().compareTo(article1.getUpdateTime()))
+    public List<Article> queryArticlesByComments(List<Article> articleList, int pageSize) {
+        List<Article> commentsSortedList = articleList.stream()
+                .sorted((article1, article2) -> article2.getCommentsNum() - article1.getCommentsNum())
                 .limit(pageSize)
                 .collect(Collectors.toList());
-        return newCommentsSortedList;
+        return commentsSortedList;
     }
 
 }

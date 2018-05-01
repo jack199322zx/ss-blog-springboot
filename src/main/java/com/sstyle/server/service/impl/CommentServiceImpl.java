@@ -1,9 +1,13 @@
 package com.sstyle.server.service.impl;
 
+import com.sstyle.server.context.SpringContextHolder;
+import com.sstyle.server.context.event.NotifyEvent;
 import com.sstyle.server.domain.Comment;
 import com.sstyle.server.mapper.CommentMapper;
 import com.sstyle.server.service.CommentService;
 import com.sstyle.server.utils.ThreadContext;
+import com.sstyle.server.web.constants.Constants;
+import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Id;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,11 +37,33 @@ public class CommentServiceImpl implements CommentService{
 
     @Override
     @Transactional
-    public int saveComment(Comment comment, String commentId) {
+    public Comment saveComment(Comment comment) {
         long id = Id.next();
         comment.setCommentId(String.valueOf(id));
         comment.setUserId(ThreadContext.getStaffId());
-        commentMapper.updateCommentByReceiveId(String.valueOf(id), commentId);
-        return  commentMapper.saveComment(comment);
+        NotifyEvent notifyEvent = new NotifyEvent("NotifyEvent");
+        notifyEvent.setAssociateId(comment.getArticleId());
+        notifyEvent.setFromUserId(comment.getUserId());
+        if (StringUtils.isNotEmpty(comment.getToCommentId())) {
+            //回复
+            //去找评论
+            Comment comm = findCommentById(comment.getToCommentId());
+            notifyEvent.setToUserId(comm.getUserId());
+            notifyEvent.setEventType(Constants.NOTIFY_EVENT_COMMENT_REPLY);
+        }else {
+            //评论
+            notifyEvent.setEventType(Constants.NOTIFY_EVENT_COMMENT);
+        }
+        SpringContextHolder.publishEvent(notifyEvent);
+        logger.info("comment=============={}",comment);
+        if (commentMapper.saveComment(comment) == 1) {
+            return comment;
+        }
+        return null;
+    }
+
+    @Override
+    public Comment findCommentById(String commentId) {
+        return commentMapper.findCommentById(commentId);
     }
 }

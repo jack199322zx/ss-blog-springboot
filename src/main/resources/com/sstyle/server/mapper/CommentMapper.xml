@@ -8,7 +8,7 @@
         <result column="COMMENT_CONTENT" property="commentContent" javaType="string"/>
         <result column="CREATE_TIME" property="createTime" javaType="java.sql.Timestamp"/>
         <result column="STATE" property="state" javaType="string"/>
-        <result column="RECEIVE_COMMENT_ID" property="receiveCommentId" javaType="string"/>
+        <result column="TO_COMMENT_ID" property="toCommentId" javaType="string"/>
         <association property="user" javaType="com.sstyle.server.domain.User">
             <id column="USER_ID" property="id"></id>
             <result column="USER_CODE" property="userCode"/>
@@ -17,20 +17,30 @@
     </resultMap>
 
     <select id="queryCommentsByArticle" parameterType="string" resultMap="commentMap">
-        SELECT CAST(sac.COMMENT_ID AS CHAR) 'COMMENT_ID',CAST(sac.ARTICLE_ID AS CHAR) 'ARTICLE_ID',sac.COMMENT_CONTENT,sac.CREATE_TIME,sac.STATE, sac.RECEIVE_COMMENT_ID,
+        SELECT CAST(sac.COMMENT_ID AS CHAR) 'COMMENT_ID',CAST(sac.ARTICLE_ID AS CHAR) 'ARTICLE_ID',sac.COMMENT_CONTENT,sac.CREATE_TIME,sac.STATE, sac.TO_COMMENT_ID,
           su.USER_ID, su.USER_AVATAR, su.USER_CODE
           FROM ss_article_comments sac, ss_user su
           WHERE sac.STATE = '1'
           AND sac.ARTICLE_ID = #{id}
           AND sac.USER_ID = su.USER_ID
+          ORDER BY sac.CREATE_TIME DESC
     </select>
 
     <insert id="saveComment" parameterType="com.sstyle.server.domain.Comment">
-        INSERT INTO ss_article_comments(COMMENT_ID, USER_ID, ARTICLE_ID, COMMENT_CONTENT,CREATE_TIME)
-          VALUES(#{commentId},#{userId},#{articleId},#{commentContent},NOW())
+        INSERT INTO ss_article_comments(COMMENT_ID, USER_ID, ARTICLE_ID, COMMENT_CONTENT,CREATE_TIME
+        <if test="comment.toCommentId!='' and comment.toCommentId!=null">
+            ,TO_COMMENT_ID
+        </if>
+        )
+          VALUES(#{comment.commentId},#{comment.userId},#{comment.articleId},#{comment.commentContent},NOW()
+        <if test="comment.toCommentId!='' and comment.toCommentId!=null">
+            ,#{comment.toCommentId}
+        </if>
+        )
     </insert>
 
-    <update id="updateCommentByReceiveId">
-        UPDATE ss_article_comments SET RECEIVE_COMMENT_ID = #{receiveCommentId} WHERE COMMENT_ID = #{commentId}
-    </update>
+    <select id="findCommentById" parameterType="string" resultMap="commentMap">
+        SELECT COMMENT_ID, USER_ID FROM ss_article_comments WHERE COMMENT_ID = #{id} and STATE = '1'
+    </select>
+
 </mapper>

@@ -5,6 +5,7 @@ import com.sstyle.server.domain.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -13,6 +14,8 @@ import java.util.Set;
 
 public interface UserMapper {
     User queryUsername(String username);
+
+    User queryUserInfo(String userId);
 
     int saveUserFavorite(@Param("userId") String userId, @Param("articleId") String articleId);
 
@@ -27,6 +30,8 @@ public interface UserMapper {
     int cancelUserFollow(@Param("authorId") String authorId, @Param("followerId") String followerId);
 
     int saveUserAvatar(@Param("avatar") String avatar,@Param("userId") String userId);
+
+    List<User> queryFollowerByUserId(String userId);
     //    Set<String> queryRoles(String username);
 //    Set<String> queryPermissions(String staffId);
 }

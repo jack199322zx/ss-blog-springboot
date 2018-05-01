@@ -8,6 +8,12 @@
                 WHERE USER_CODE = #{username}
     </select>
 
+    <select id="queryUserInfo" parameterType="string" resultType="com.sstyle.server.domain.User">
+        SELECT USER_ID 'id', USER_CODE 'userCode', USER_NAME 'userName',USER_AVATAR 'avatar'
+        FROM ss_user
+        WHERE USER_ID = #{id}
+    </select>
+
     <insert id="saveUserFavorite">
         INSERT INTO ss_user_favorite(USER_ID, FAVORITE_ARTICLE_ID, CREATE_TIME, UPDATE_TIME) VALUES(#{userId}, #{articleId}, NOW(), NOW())
           ON DUPLICATE KEY UPDATE STATE = '1', UPDATE_TIME = NOW()
@@ -37,4 +43,12 @@
     <update id="saveUserAvatar">
         UPDATE ss_user SET USER_AVATAR = #{avatar} WHERE USER_ID = #{userId}
     </update>
+
+    <select id="queryFollowerByUserId" parameterType="string" resultType="com.sstyle.server.domain.User">
+        SELECT su.USER_ID, su.USER_CODE FROM ss_user su, ss_user_follow suf
+          WHERE su.USER_ID = suf.USER_ID
+          AND suf.FOLLOW_USER_ID = #{id}
+          AND suf.STATE = '1'
+    </select>
+
 </mapper>

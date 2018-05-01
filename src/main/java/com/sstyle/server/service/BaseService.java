@@ -14,5 +14,5 @@ public interface BaseService {
     List<Flag> queryAllFlags();
     List<Article> queryArticlesByViewNum(List<Article> articleList, int pageSize);
     List<Article> queryArticlesByCreateTime(List<Article> articleList, int pageSize);
-    List<Article> queryArticlesByNewComments(List<Article> articleList, int pageSize);
+    List<Article> queryArticlesByComments(List<Article> articleList, int pageSize);
 }
