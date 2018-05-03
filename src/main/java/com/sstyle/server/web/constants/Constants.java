@@ -27,7 +27,8 @@ public class Constants {
     public static final int TOKEN_KEY_EXPIRE_TIME = 60 * 60 * 5 * 100;
     public static final String AUTHORIZATION_HEADER = "Authorization"; //请求头
 
-    public static final int PAGE_SIZE = 2; //分页大小
+    public static final int ARTICLE_PAGE_SIZE = 6; //分页大小
+    public static final int HOME_PAGE_SIZE = 15;
     public static final String IMG_PREFIX = "http://localhost:8988/ss-server/"; //图片存储路径前缀
     public static final String PRIMARY_USER_ROLE_ID = "40002"; //普通用户
 }

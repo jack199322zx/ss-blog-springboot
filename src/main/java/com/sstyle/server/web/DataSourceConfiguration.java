@@ -2,7 +2,13 @@ package com.sstyle.server.web;
 
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
+import com.github.pagehelper.PageHelper;
+import com.sstyle.server.web.interceptor.SqlPrintInterceptor;
+import org.apache.ibatis.plugin.Interceptor;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
@@ -12,16 +18,23 @@ import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import javax.sql.DataSource;
+import java.io.IOException;
+import java.util.Properties;
 
 /**
  * Created by ss on 2018/3/24.
  */
 @Configuration
 public class DataSourceConfiguration {
+
+    private Logger logger = LoggerFactory.getLogger(DataSourceConfiguration.class);
+
     //配置druid数据源监控
     @Bean
     public ServletRegistrationBean statViewServle(){
@@ -59,10 +72,34 @@ public class DataSourceConfiguration {
         return DataSourceBuilder.create().type(com.alibaba.druid.pool.DruidDataSource.class).build();
     }
     @Bean
-    public SqlSessionFactoryBean sqlSessionFactory(@Qualifier("dataSource") DataSource dataSource) {
-        SqlSessionFactoryBean bean=new SqlSessionFactoryBean();
-        bean.setDataSource(dataSource);
-        return bean;
+    public SqlSessionFactory sqlSessionFactory(@Qualifier("dataSource") DataSource dataSource) {
+//        SqlSessionFactoryBean bean=new SqlSessionFactoryBean();
+//        bean.setDataSource(dataSource);
+//        return bean;
+        try {
+            SqlSessionFactoryBean sessionFactoryBean = new SqlSessionFactoryBean();
+            sessionFactoryBean.setDataSource(dataSource);
+
+            // 读取配置
+//            sessionFactoryBean.setTypeAliasesPackage(typeAliasesPackage);
+            //设置mapper.xml文件所在位置
+//            Resource[] resources = new PathMatchingResourcePatternResolver().getResources(mapperLocations);
+//            sessionFactoryBean.setMapperLocations(resources);
+            //设置mybatis-config.xml配置文件位置
+//            sessionFactoryBean.setConfigLocation(new DefaultResourceLoader().getResource(configLocation));
+
+            //添加分页插件、打印sql插件
+            Interceptor[] plugins = new Interceptor[]{pageHelper(),sqlPrintInterceptor()};
+            sessionFactoryBean.setPlugins(plugins);
+
+            return sessionFactoryBean.getObject();
+        } catch (IOException e) {
+            logger.error("mybatis resolver mapper*xml is error",e);
+            return null;
+        } catch (Exception e) {
+            logger.error("mybatis sqlSessionFactoryBean create error",e);
+            return null;
+        }
     }
 
     @Bean
@@ -70,5 +107,25 @@ public class DataSourceConfiguration {
         DataSourceTransactionManager  dataSourceTransactionManager = new DataSourceTransactionManager();
         dataSourceTransactionManager.setDataSource(dataSource);
         return  dataSourceTransactionManager;
+    }
+
+    //分页插件
+    @Bean
+    public PageHelper pageHelper() {
+        PageHelper pageHelper = new PageHelper();
+        Properties p = new Properties();
+        p.setProperty("offsetAsPageNum", "true");
+        p.setProperty("rowBoundsWithCount", "true");
+        p.setProperty("reasonable", "true");
+        p.setProperty("returnPageInfo", "check");
+        p.setProperty("params", "count=countSql");
+        pageHelper.setProperties(p);
+        return pageHelper;
+    }
+
+    //将要执行的sql进行日志打印(不想拦截，就把这方法注释掉)
+    @Bean
+    public SqlPrintInterceptor sqlPrintInterceptor(){
+        return new SqlPrintInterceptor();
     }
 }

@@ -1,5 +1,7 @@
 package com.sstyle.server.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.sstyle.server.domain.*;
 import com.sstyle.server.mapper.BlogMapper;
 import com.sstyle.server.mapper.HomeMapper;
@@ -7,7 +9,10 @@ import com.sstyle.server.mapper.UserMapper;
 import com.sstyle.server.service.BlogService;
 import com.sstyle.server.service.HomeService;
 import com.sstyle.server.utils.MapUtils;
+import com.sstyle.server.web.constants.Constants;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,15 +28,18 @@ import java.util.Map;
 public class HomeServiceImpl implements HomeService{
     @Autowired
     private HomeMapper homeMapper;
-
     @Autowired
     private BlogMapper blogMapper;
-
     @Autowired
     private UserMapper userMapper;
 
+    private Logger logger = LoggerFactory.getLogger(HomeServiceImpl.class);
+
     public List<Map> queryDynamics(String userId, int page) {
+        PageHelper.startPage(page, Constants.HOME_PAGE_SIZE);
         List<Feeds> feedsList = homeMapper.queryDynamicsById(userId);
+        PageInfo<Feeds> pageInfo = new PageInfo<>(feedsList);
+        logger.info("feedsList============{}", feedsList);
         List<Map> dynamicList = new ArrayList<>();
         if (feedsList !=null && feedsList.size()> 0) {
             feedsList.stream().forEach(feed -> {
@@ -41,6 +49,7 @@ public class HomeServiceImpl implements HomeService{
                 dataMap.put("userName", article.getUser().getUserName());
                 dataMap.put("article", article);
                 dataMap.put("feed", feed);
+                dataMap.put("pageCount", pageInfo.getTotal());
                 dynamicList.add(dataMap);
             });
         }
@@ -48,8 +57,11 @@ public class HomeServiceImpl implements HomeService{
     }
 
     @Override
-    public List<Article> queryMyArticlesById(String userId, int page) {
-        return homeMapper.queryMyArticlesById(userId);
+    public Map<String, Object> queryMyArticlesById(String userId, int page) {
+        PageHelper.startPage(page, Constants.HOME_PAGE_SIZE);
+        List<Article> articleList = homeMapper.queryMyArticlesById(userId);
+        PageInfo<Article> pageInfo = new PageInfo<>(articleList);
+        return MapUtils.of("articleList", articleList, "pageCount", pageInfo.getPages());
     }
 
     @Override

@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public interface HomeService {
     List<Map> queryDynamics(String userId, int page);
-    List<Article> queryMyArticlesById(String userId, int page);
+    Map<String, Object> queryMyArticlesById(String userId, int page);
     List<Map> queryMyCommentsById(String userId, int page);
     List<Map> queryMyNotify(String userId, int page);
     List<Article> queryMyFavoritesById(String userId, int page);

@@ -1,32 +1,20 @@
 package com.sstyle.server.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.sstyle.server.context.SpringContextHolder;
-import com.sstyle.server.context.event.NotifyEvent;
 import com.sstyle.server.domain.*;
-import com.sstyle.server.mapper.ArticleMapper;
 import com.sstyle.server.mapper.BlogMapper;
-import com.sstyle.server.mapper.UserMapper;
 import com.sstyle.server.service.*;
 import com.sstyle.server.utils.MapUtils;
 import com.sstyle.server.utils.RedisClient;
 import com.sstyle.server.web.cache.ArticleCache;
 import com.sstyle.server.web.cache.FlagCache;
 import com.sstyle.server.web.constants.Constants;
-import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -56,9 +44,9 @@ public class BlogServiceImpl implements BlogService{
         List<Article> articleDistList = articleCache.queryPageArticlesByDist(dist);
         int size = articleDistList.size();
         logger.info("articleDistList============={}", articleDistList);
-        int pageCount = calculatePageCount(size, Constants.PAGE_SIZE);
-        int start = page * Constants.PAGE_SIZE;
-        int end = (page + 1) * Constants.PAGE_SIZE;
+        int pageCount = calculatePageCount(size, Constants.ARTICLE_PAGE_SIZE);
+        int start = page * Constants.ARTICLE_PAGE_SIZE;
+        int end = (page + 1) * Constants.ARTICLE_PAGE_SIZE;
         end = end > size ? size: end;
         return MapUtils.of("articleList", articleDistList.subList(start, end), "pageCount", pageCount);
     }
@@ -68,11 +56,11 @@ public class BlogServiceImpl implements BlogService{
         List<Article> articleList = articleCache.queryAllArticles();
         List<Article> articleDistList = articleCache.queryPageArticlesByDist(0);
         int size = articleDistList.size();
-        int pageCount = calculatePageCount(size, Constants.PAGE_SIZE);
+        int pageCount = calculatePageCount(size, Constants.ARTICLE_PAGE_SIZE);
         List<Flag> flagList = flagCache.queryAllFlags();
-        List<Article> viewNumSortedList = queryArticlesByViewNum(articleList, Constants.PAGE_SIZE);
-        List<Article> createTimeSortedList = queryArticlesByCreateTime(articleList, Constants.PAGE_SIZE);
-        List<Article> commentsSortedList = queryArticlesByComments(articleList, Constants.PAGE_SIZE);
+        List<Article> viewNumSortedList = queryArticlesByViewNum(articleList, Constants.ARTICLE_PAGE_SIZE);
+        List<Article> createTimeSortedList = queryArticlesByCreateTime(articleList, Constants.ARTICLE_PAGE_SIZE);
+        List<Article> commentsSortedList = queryArticlesByComments(articleList, Constants.ARTICLE_PAGE_SIZE);
         return MapUtils.of("flagList", flagList,
                 "viewNumSortedList", viewNumSortedList,
                 "createTimeSortedList", createTimeSortedList,
@@ -105,9 +93,9 @@ public class BlogServiceImpl implements BlogService{
         int publishNum = blogMapper.queryPublishArticleNum(article.getUser().getId());
         int commentsNum = blogMapper.queryCommentsNum(article.getUser().getId());
         List<Article> articleList = articleCache.queryAllArticles();
-        List<Article> viewNumSortedList = queryArticlesByViewNum(articleList, Constants.PAGE_SIZE);
-        List<Article> createTimeSortedList = queryArticlesByCreateTime(articleList, Constants.PAGE_SIZE);
-        List<Article> commentsSortedList = queryArticlesByComments(articleList, Constants.PAGE_SIZE);
+        List<Article> viewNumSortedList = queryArticlesByViewNum(articleList, Constants.ARTICLE_PAGE_SIZE);
+        List<Article> createTimeSortedList = queryArticlesByCreateTime(articleList, Constants.ARTICLE_PAGE_SIZE);
+        List<Article> commentsSortedList = queryArticlesByComments(articleList, Constants.ARTICLE_PAGE_SIZE );
         List<Comment> commentsList = commentService.queryCommentsByArticleId(articleId);
         List<Comment> filterCommentsList = commentsList.stream().map(comm -> {
             List<Comment> list = commentsList.stream().filter(c -> c.getCommentId().equals(comm.getToCommentId())).collect(Collectors.toList());
