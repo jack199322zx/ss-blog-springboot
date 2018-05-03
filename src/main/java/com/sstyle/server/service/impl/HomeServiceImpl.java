@@ -4,6 +4,7 @@ import com.sstyle.server.domain.*;
 import com.sstyle.server.mapper.BlogMapper;
 import com.sstyle.server.mapper.HomeMapper;
 import com.sstyle.server.mapper.UserMapper;
+import com.sstyle.server.service.BlogService;
 import com.sstyle.server.service.HomeService;
 import com.sstyle.server.utils.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +30,7 @@ public class HomeServiceImpl implements HomeService{
     @Autowired
     private UserMapper userMapper;
 
-    public List<Map> queryDynamics(String userId) {
+    public List<Map> queryDynamics(String userId, int page) {
         List<Feeds> feedsList = homeMapper.queryDynamicsById(userId);
         List<Map> dynamicList = new ArrayList<>();
         if (feedsList !=null && feedsList.size()> 0) {
@@ -37,8 +38,9 @@ public class HomeServiceImpl implements HomeService{
                 Article article = blogMapper.queryArticleDetailById(feed.getAssociationId());
                 Map dataMap = new HashMap();
                 dataMap.put("userAvatar", article.getUser().getAvatar());
-                dataMap.put("userCode", article.getUser().getUserCode());
+                dataMap.put("userName", article.getUser().getUserName());
                 dataMap.put("article", article);
+                dataMap.put("feed", feed);
                 dynamicList.add(dataMap);
             });
         }
@@ -46,12 +48,12 @@ public class HomeServiceImpl implements HomeService{
     }
 
     @Override
-    public List<Article> queryMyArticlesById(String userId) {
+    public List<Article> queryMyArticlesById(String userId, int page) {
         return homeMapper.queryMyArticlesById(userId);
     }
 
     @Override
-    public List<Map> queryMyCommentsById(String userId) {
+    public List<Map> queryMyCommentsById(String userId, int page) {
         List<Comment> commentList = homeMapper.queryMyCommentsById(userId);
         List<Map> myCommentsList = new ArrayList<>();
         if (commentList !=null && commentList.size()> 0) {
@@ -64,7 +66,7 @@ public class HomeServiceImpl implements HomeService{
     }
 
     @Override
-    public List<Map> queryMyNotify(String userId) {
+    public List<Map> queryMyNotify(String userId, int page) {
         List<Notify> notifyList = homeMapper.queryMyNotifyById(userId);
         List<Map> myNotifyList = new ArrayList<>();
         if (notifyList !=null && notifyList.size()> 0) {
@@ -74,9 +76,24 @@ public class HomeServiceImpl implements HomeService{
                 if (StringUtils.isNotEmpty(ntf.getAssociationId())) {
                    article = blogMapper.queryArticleDetailById(ntf.getAssociationId());
                 }
-                myNotifyList.add(MapUtils.of("article", article, "user", user));
+                myNotifyList.add(MapUtils.of("article", article, "user", user, "notify", ntf));
             });
         }
         return myNotifyList;
+    }
+
+    @Override
+    public List<Article> queryMyFavoritesById(String userId, int page) {
+        return homeMapper.queryMyFavoritesById(userId);
+    }
+
+    @Override
+    public List<User> queryMyFollow(String userId) {
+        return homeMapper.queryMyFollow(userId);
+    }
+
+    @Override
+    public List<User> queryMyFans(String userId) {
+        return homeMapper.queryMyFans(userId);
     }
 }

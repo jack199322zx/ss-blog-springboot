@@ -16,4 +16,26 @@
       INSERT INTO ss_notify(EVENT_TYPE,CREATE_TIME,TO_ID,FROM_ID,ASSOCIATION_ID,NOTIFY_ID) VALUES(#{eventType},
       NOW(),#{toId},#{fromId},#{associationId},#{notifyId})
     </insert>
+
+    <select id="findUnreadNotify" parameterType="string" resultType="int">
+       SELECT COUNT(*) FROM ss_notify WHERE TO_ID = #{id} AND STATE = '0'
+    </select>
+
+    <update id="updateReadNotify" parameterType="com.sstyle.server.domain.Notify">
+        UPDATE ss_notify SET STATE = '1' WHERE NOTIFY_ID = #{notifyId}
+    </update>
+
+    <delete id="deleteByArticleId" parameterType="string">
+        DELETE FROM ss_notify WHERE ASSOCIATION_ID = #{id}
+    </delete>
+
+    <delete id="deleteNotifyByCancelFavorite">
+        DELETE FROM ss_notify WHERE FROM_ID = #{userId} AND ASSOCIATION_ID = #{articleId} AND EVENT_TYPE = 1
+    </delete>
+
+    <delete id="deleteNotifyByCancelComment" parameterType="string">
+        DELETE FROM ss_notify WHERE COMMENT_ID = #{id}
+    </delete>
+
+
 </mapper>

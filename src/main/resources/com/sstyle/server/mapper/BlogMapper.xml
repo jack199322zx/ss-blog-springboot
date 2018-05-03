@@ -82,7 +82,7 @@
         and STATE = '1'
     </select>
 
-    <select id="queryAllArticlesByDist" parameterType="int" resultMap="articleMap">
+    <select id="queryPageArticlesByDist" parameterType="int" resultMap="articleMap">
          SELECT DISTINCT sa.AUTHOR_REC, sa.VIEW_NUM , sa.COMMENTS_NUM , sa.UPDATE_TIME ,
         sa.CREATE_TIME , sa.ARTICLE_IMG , sa.ARTICLE_TYPE , sa.ARTICLE_DESC ,
         sa.ARTICLE_TITLE , sa.FAVORITE_NUM, CAST(sa.ARTICLE_ID as char) 'ARTICLE_ID'
@@ -119,6 +119,7 @@
     </update>
 
     <update id="updateCommentsNum">
-        UPDATE ss_article SET COMMENTS_NUM = #{commentsNum} WHERE ARTICLE_ID = #{articleId}
+        UPDATE ss_article SET COMMENTS_NUM = #{commentsNum}, UPDATE_TIME = NOW() WHERE ARTICLE_ID = #{articleId}
     </update>
+
 </mapper>

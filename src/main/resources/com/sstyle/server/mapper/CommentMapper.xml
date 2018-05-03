@@ -43,4 +43,8 @@
         SELECT COMMENT_ID, USER_ID FROM ss_article_comments WHERE COMMENT_ID = #{id} and STATE = '1'
     </select>
 
+    <delete id="deleteCommentById" parameterType="string">
+        DELETE FROM ss_article_comments WHERE COMMENT_ID =#{id}
+    </delete>
+
 </mapper>

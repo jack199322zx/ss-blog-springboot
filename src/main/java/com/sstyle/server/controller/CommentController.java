@@ -30,4 +30,9 @@ public class CommentController {
         }
         return new JSONResult("failed");
     }
+
+    @RequestMapping("/delete-comment")
+    public JSONResult delComments(@RequestBody Comment comment) {
+       return new JSONResult(commentService.deleteComment(comment));
+    }
 }

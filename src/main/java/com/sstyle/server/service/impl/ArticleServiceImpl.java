@@ -5,8 +5,12 @@ import com.sstyle.server.context.event.FeedsEvent;
 import com.sstyle.server.context.event.NotifyEvent;
 import com.sstyle.server.domain.*;
 import com.sstyle.server.mapper.ArticleMapper;
+import com.sstyle.server.mapper.BlogMapper;
 import com.sstyle.server.service.ArticleService;
+import com.sstyle.server.service.FeedsService;
+import com.sstyle.server.service.NotifyService;
 import com.sstyle.server.utils.*;
+import com.sstyle.server.web.constants.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Id;
 import org.slf4j.Logger;
@@ -31,11 +35,15 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     private ArticleMapper articleMapper;
+    @Autowired
+    private BlogMapper blogMapper;
+    @Autowired
+    private FeedsService feedsService;
+    @Autowired
+    private NotifyService notifyService;
 
     @Value("${web.upload-path}")
     private String location;
-
-    public static final String IMG_PREFIX = "http://localhost:8988/ss-server/";
 
     private Logger logger = LoggerFactory.getLogger(ArticleServiceImpl.class);
 
@@ -50,12 +58,19 @@ public class ArticleServiceImpl implements ArticleService {
         article.setArticleImg(backImg);
         article.setArticleDesc(markdown2Html);
         article.setArticleSign(Optional.ofNullable(mavon.getSign()).orElse(""));
-        long articleId = Id.next();
-        article.setArticleId(String.valueOf(articleId));
+        String articleId;
+        String mavonArticleId = mavon.getArticleId();
+        if (StringUtils.isNotEmpty(mavonArticleId)) {
+            //编辑文章
+            articleId = mavonArticleId;
+        }else {
+            articleId = String.valueOf(Id.next());
+        }
+        article.setArticleId(articleId);
         article.setFlagList(mavon.getFlagList());
         article.setArticleType(mavon.getChannelId());
-        mavon.getFlagList().stream().forEach(flag -> articleMapper.saveFlagByArticle(String.valueOf(articleId), flag.getFlagId()));
-        publishEvent(String.valueOf(articleId), mavon.getUser());
+        mavon.getFlagList().stream().forEach(flag -> articleMapper.saveFlagByArticle(articleId, flag.getFlagId()));
+        publishEvent(articleId, mavon.getUser());
         return articleMapper.saveArticle(article, mavon.getUser());
     }
 
@@ -76,7 +91,7 @@ public class ArticleServiceImpl implements ArticleService {
         logger.info("图片保存路径={}", filePath);
         String file_name = ImageUtil.saveImg(file, filePath);
         logger.info("返回文件名={}", file_name);
-        return new JSONResult(IMG_PREFIX + return_path + File.separator + file_name);
+        return new JSONResult(Constants.IMG_PREFIX + return_path + File.separator + file_name);
 
     }
     @Override
@@ -101,4 +116,17 @@ public class ArticleServiceImpl implements ArticleService {
         SpringContextHolder.publishEvent(feedsEvent);
     }
 
+    @Override
+    public Article queryEditArticleById(String articleId) {
+        return blogMapper.queryArticleDetailById(articleId);
+    }
+
+    @Override
+    @Transactional
+    public int deleteArticle(String articleId) {
+        // 删除文章相关的通知和动态
+        feedsService.deleteByTarget(articleId);
+        notifyService.deleteNotifyByArticle(articleId);
+        return articleMapper.deleteArticleById(articleId);
+    }
 }

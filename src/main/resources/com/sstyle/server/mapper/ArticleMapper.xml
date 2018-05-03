@@ -38,7 +38,14 @@
         <if test="article.articleImg !=null and article.articleImg != ''">
             #{article.articleImg},
         </if>
-        NOW(),NOW())
+        NOW(),NOW()) ON DUPLICATE KEY UPDATE USER_ID = #{user.id}, ARTICLE_DESC = #{article.articleDesc}, ARTICLE_TYPE = #{article.articleType},
+        ARTICLE_TITLE = #{article.articleTitle}, UPDATE_TIME = NOW()
+        <if test="article.articleSign !=null and article.articleSign != ''">
+            ,ARTICLE_SIGN = #{article.articleSign}
+        </if>
+        <if test="article.articleImg !=null and article.articleImg != ''">
+            ,ARTICLE_IMG = #{article.articleImg}
+        </if>
     </insert>
 
     <select id="queryFlagByDist" parameterType="int" resultMap="flagMap">
@@ -50,5 +57,10 @@
 
     <insert id="saveFlagByArticle">
         INSERT INTO ss_article_flag(ARTICLE_ID, FLAG_ID, CREATE_TIME) VALUES(#{articleId}, #{flagId}, NOW())
+        ON DUPLICATE KEY UPDATE ARTICLE_ID = VALUES(ARTICLE_ID), FLAG_ID = VALUES(FLAG_ID)
     </insert>
+
+    <delete id="deleteArticleById" parameterType="string">
+        DELETE FROM ss_article WHERE ARTICLE_ID = #{id}
+    </delete>
 </mapper>

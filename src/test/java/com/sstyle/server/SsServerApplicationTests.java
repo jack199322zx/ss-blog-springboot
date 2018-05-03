@@ -22,7 +22,7 @@ public class SsServerApplicationTests {
 	public void contextLoads() {
 		List<Article> articleList = blogMapper.queryArticlesByPageAndFlag(0, 6, 2018001);
 		System.out.println(articleList);
-		List<Article> flagList = blogMapper.queryAllArticlesByDist(0);
+		List<Article> flagList = blogMapper.queryPageArticlesByDist(0);
 		System.out.println(flagList);
 	}
 

@@ -7,16 +7,16 @@
     <defaultCache maxElementsInMemory="1000" eternal="false" timeToIdleSeconds="1800" timeToLiveSeconds="3600"
                   overflowToDisk="false"/>
 
-    <cache name="blogCaches"
+    <cache name="articleCaches"
            eternal="false"
            maxElementsOnDisk="9999"
            maxElementsInMemory="1000"
            overflowToDisk="true"
-           timeToIdleSeconds="10"
-           timeToLiveSeconds="10"
+           timeToIdleSeconds="360"
+           timeToLiveSeconds="720"
            memoryStoreEvictionPolicy="LRU"/>
 
-    <cache name="tagCaches"
+    <cache name="flagCaches"
            eternal="false"
            maxElementsOnDisk="9999"
            maxElementsInMemory="1000"

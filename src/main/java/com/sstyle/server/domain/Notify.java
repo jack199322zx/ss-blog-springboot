@@ -15,6 +15,7 @@ public class Notify {
     private String associationId;
     private String fromId;
     private String toId;
+    private String commentId;
     private Timestamp createTime;
     private String state;
     private int eventType;

@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Mavon {
 
     private String title;
+    private String articleId;
     private String articleImg;
     private int channelId;
     private String markdown;

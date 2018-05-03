@@ -8,6 +8,8 @@ import com.sstyle.server.domain.JSONResult;
 import com.sstyle.server.domain.User;
 import com.sstyle.server.mapper.ArticleMapper;
 import com.sstyle.server.mapper.UserMapper;
+import com.sstyle.server.service.FeedsService;
+import com.sstyle.server.service.NotifyService;
 import com.sstyle.server.service.UserService;
 import com.sstyle.server.utils.MapUtils;
 import com.sstyle.server.utils.QiniuUtil;
@@ -35,13 +37,12 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     private UserMapper userMapper;
-
     @Autowired
     private ArticleMapper articleMapper;
-
-    private static final String AUTHORIZATION_HEADER = "Authorization";
-
-    private int EXPIRE_TIME = 100 * 60 * 60 * 5;
+    @Autowired
+    private FeedsService feedsService;
+    @Autowired
+    private NotifyService notifyService;
 
     private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -78,7 +79,10 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
     public int cancelFollowById(String authorId, String followerId) {
+        //取消关注时，删除此人的动态
+        feedsService.deleteByAuthorId(followerId, authorId);
         return userMapper.cancelUserFollow(authorId, followerId);
     }
 
@@ -92,11 +96,11 @@ public class UserServiceImpl implements UserService{
         String userId = ThreadContext.getStaffId();
         userMapper.saveUserAvatar(backHash, userId);
         //更新redis，用户上传的头像
-        String authToken = request.getHeader(AUTHORIZATION_HEADER);
+        String authToken = request.getHeader(Constants.AUTHORIZATION_HEADER);
         String json = RedisClient.getAndDel(authToken);
         User user = JSONObject.parseObject(json, User.class);
         user.setAvatar(backHash);
-        RedisClient.setex(authToken, JSON.toJSONString(user), EXPIRE_TIME);
+        RedisClient.setex(authToken, JSON.toJSONString(user), Constants.TOKEN_KEY_EXPIRE_TIME);
         return new JSONResult(backHash);
     }
     @Override
@@ -115,6 +119,8 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public int cancelFavoriteByArticleId(String articleId, String userId) {
+        // 取消用户喜欢文章的通知
+        notifyService.deleteNotifyByCancelFavorite(userId, articleId);
         userMapper.cancelUserFavorite(userId, articleId);
         return articleMapper.cancelFavoriteById(articleId);
     }

@@ -1,9 +1,6 @@
 package com.sstyle.server.mapper;
 
-import com.sstyle.server.domain.Article;
-import com.sstyle.server.domain.Comment;
-import com.sstyle.server.domain.Feeds;
-import com.sstyle.server.domain.Notify;
+import com.sstyle.server.domain.*;
 
 import java.util.List;
 
@@ -15,4 +12,7 @@ public interface HomeMapper {
     List<Article> queryMyArticlesById(String userId);
     List<Comment> queryMyCommentsById(String userId);
     List<Notify> queryMyNotifyById(String userId);
+    List<Article> queryMyFavoritesById(String userId);
+    List<User> queryMyFollow(String userId);
+    List<User> queryMyFans(String userId);
 }

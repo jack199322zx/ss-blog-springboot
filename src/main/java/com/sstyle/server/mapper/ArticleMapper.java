@@ -17,4 +17,5 @@ public interface ArticleMapper {
     int saveArticle(@Param("article") Article article,@Param("user") User user);
     int saveFlagByArticle(@Param("articleId") String articleId,@Param("flagId") int flagId);
     List<Flag> queryFlagByDist(int dist);
+    int deleteArticleById(String articleId);
 }

@@ -9,6 +9,7 @@ import com.sstyle.server.exception.UserExistException;
 import com.sstyle.server.mapper.RegisterMapper;
 import com.sstyle.server.service.RegisterService;
 import com.sstyle.server.utils.*;
+import com.sstyle.server.web.constants.Constants;
 import org.n3r.idworker.Id;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,8 +30,6 @@ public class RegisterServiceImpl implements RegisterService {
 
     @Autowired
     private RegisterMapper registerMapper;
-
-    public static final String PRIMARY_USER_ROLE_ID = "40002";
 
     @Override
     public JSONResult initCaptcha(String phoneNum) {
@@ -90,7 +89,7 @@ public class RegisterServiceImpl implements RegisterService {
                 throw new UserExistException();
             }
         }
-        registerMapper.saveUserRole(String.valueOf(userId), PRIMARY_USER_ROLE_ID);
+        registerMapper.saveUserRole(String.valueOf(userId), Constants.PRIMARY_USER_ROLE_ID);
         return new JSONResult("ok");
     }
 

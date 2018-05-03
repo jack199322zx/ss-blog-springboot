@@ -11,7 +11,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @SpringBootApplication
 @EnableTransactionManagement
-@EnableCaching
 @MapperScan("com.sstyle.server.mapper")//配置mybatis包扫描
 public class SsServerApplication {
 

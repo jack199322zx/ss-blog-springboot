@@ -18,4 +18,21 @@
             (select #{item.feedsId}, #{item.fromId}, #{item.toId}, #{item.associationId}, NOW(), #{item.feedsType} from dual)
         </foreach>
     </insert>
+
+    <select id="unreadDynamics" parameterType="string" resultType="int">
+         SELECT COUNT(*) FROM ss_feeds WHERE TO_ID = #{id} AND STATE = '0'
+    </select>
+
+    <update id="updateReadFeeds" parameterType="com.sstyle.server.domain.Feeds">
+        UPDATE ss_feeds SET STATE = '1' WHERE FEEDS_ID = #{feedsId}
+    </update>
+
+    <delete id="deleteFeedsByAuthor">
+        DELETE FROM ss_feeds WHERE TO_ID = #{userId} AND FROM_ID = #{authorId}
+    </delete>
+
+    <delete id="deleteByArticleId" parameterType="string">
+        DELETE FROM ss_feeds WHERE ASSOCIATION_ID = #{id}
+    </delete>
+
 </mapper>

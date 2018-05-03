@@ -12,13 +12,14 @@
     <select id="queryMyArticlesById" parameterType="string" resultType="com.sstyle.server.domain.Article">
         SELECT sa.AUTHOR_REC 'authorRec', sa.VIEW_NUM 'viewNum', sa.COMMENTS_NUM 'commentsNum', sa.UPDATE_TIME 'updateTime',
         sa.CREATE_TIME 'createTime', sa.ARTICLE_IMG 'articleImg', sa.ARTICLE_TYPE 'articleType', sa.ARTICLE_DESC 'articleDesc',
-        sa.ARTICLE_TITLE 'articleTitle', CAST(sa.ARTICLE_ID as char) 'articleId'
+        sa.ARTICLE_TITLE 'articleTitle',sa.FAVORITE_NUM 'favoriteNum' ,CAST(sa.ARTICLE_ID as char) 'articleId'
         FROM ss_article sa
         WHERE sa.USER_ID = #{id}
     </select>
 
     <select id="queryMyCommentsById" parameterType="string" resultType="com.sstyle.server.domain.Comment">
-        SELECT COMMENT_ID 'commentId',USER_ID 'userId', ARTICLE_ID 'articleId', COMMENT_CONTENT 'commentContent', TO_COMMENT_ID 'toCommentId'
+        SELECT COMMENT_ID 'commentId',USER_ID 'userId', ARTICLE_ID 'articleId', COMMENT_CONTENT 'commentContent', TO_COMMENT_ID 'toCommentId',
+        CREATE_TIME 'createTime'
         FROM ss_article_comments
         WHERE USER_ID = #{id}
         AND STATE = '1'
@@ -30,5 +31,29 @@
         FROM ss_notify
         WHERE TO_ID = #{id}
         AND STATE = '0'
+    </select>
+
+    <select id="queryMyFavoritesById" parameterType="string" resultType="com.sstyle.server.domain.Article">
+SELECT sa.AUTHOR_REC 'authorRec', sa.VIEW_NUM 'viewNum', sa.COMMENTS_NUM 'commentsNum', sa.UPDATE_TIME 'updateTime',
+        sa.CREATE_TIME 'createTime', sa.ARTICLE_IMG 'articleImg', sa.ARTICLE_TYPE 'articleType', sa.ARTICLE_DESC 'articleDesc',
+        sa.ARTICLE_TITLE 'articleTitle',sa.FAVORITE_NUM 'favoriteNum' ,CAST(sa.ARTICLE_ID as char) 'articleId'
+        FROM ss_article sa, ss_user_favorite suf
+        WHERE suf.USER_ID = #{id}
+        AND suf.FAVORITE_ARTICLE_ID = sa.ARTICLE_ID
+        AND suf.STATE = '1'
+    </select>
+
+    <select id="queryMyFollow" parameterType="string" resultType="com.sstyle.server.domain.User">
+       SELECT su.USER_ID 'id', su.USER_CODE 'userCode', su.USER_NAME 'userName', su.USER_AVATAR 'avatar' FROM ss_user su, ss_user_follow suf
+       WHERE su.USER_ID = suf.FOLLOW_USER_ID
+       AND suf.USER_ID = #{id}
+       AND suf.STATE = '1'
+    </select>
+
+    <select id="queryMyFans" parameterType="string" resultType="com.sstyle.server.domain.User">
+        SELECT su.USER_ID 'id', su.USER_CODE 'userCode', su.USER_NAME 'userName', su.USER_AVATAR 'avatar' FROM ss_user su, ss_user_follow suf
+        WHERE su.USER_ID = suf.USER_ID
+        AND suf.FOLLOW_USER_ID = #{id}
+        AND suf.STATE = '1'
     </select>
 </mapper>

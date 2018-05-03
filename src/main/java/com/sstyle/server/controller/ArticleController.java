@@ -35,7 +35,17 @@ public class ArticleController {
     }
 
     @RequestMapping(value = "/queryFlagByDist", method = RequestMethod.POST)
-    public JSONResult queryArticleByDist(@RequestParam int dist){
+    public JSONResult queryArticleFlagByDist(@RequestParam int dist){
         return new JSONResult(articleService.queryFlagByDist(dist));
+    }
+
+    @RequestMapping(value = "/edit-article", method = RequestMethod.POST)
+    public JSONResult editArticle(@RequestParam String articleId){
+        return new JSONResult(articleService.queryEditArticleById(articleId));
+    }
+
+    @RequestMapping(value = "/delete-article", method = RequestMethod.POST)
+    public JSONResult deleteArticle(@RequestParam String articleId){
+        return new JSONResult(articleService.deleteArticle(articleId));
     }
 }

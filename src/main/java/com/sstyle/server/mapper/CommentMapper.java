@@ -13,4 +13,5 @@ public interface CommentMapper {
     List<Comment> queryCommentsByArticle(String articleId);
     int saveComment(@Param("comment") Comment comment);
     Comment findCommentById(String commentId);
+    int deleteCommentById(String commentId);
 }

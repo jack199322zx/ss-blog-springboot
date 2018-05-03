@@ -12,4 +12,5 @@ public interface CommentService {
     List<Comment> queryCommentsByArticleId(String articleId);
     Comment saveComment(Comment comment);
     Comment findCommentById(String commentId);
+    int deleteComment(Comment comment);
 }

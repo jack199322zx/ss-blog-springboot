@@ -1,5 +1,6 @@
 package com.sstyle.server.service;
 
+import com.sstyle.server.domain.Article;
 import com.sstyle.server.domain.Flag;
 import com.sstyle.server.domain.JSONResult;
 import com.sstyle.server.domain.Mavon;
@@ -17,4 +18,6 @@ public interface ArticleService {
     JSONResult backUrl(MultipartFile file) throws IOException;
     JSONResult delImg(String filename);
     Map<String, Object> queryFlagByDist(int dist);
+    Article queryEditArticleById(String articleId);
+    int deleteArticle(String articleId);
 }

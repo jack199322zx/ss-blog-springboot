@@ -45,7 +45,7 @@
     </update>
 
     <select id="queryFollowerByUserId" parameterType="string" resultType="com.sstyle.server.domain.User">
-        SELECT su.USER_ID, su.USER_CODE FROM ss_user su, ss_user_follow suf
+        SELECT su.USER_ID 'id', su.USER_CODE 'userCode' FROM ss_user su, ss_user_follow suf
           WHERE su.USER_ID = suf.USER_ID
           AND suf.FOLLOW_USER_ID = #{id}
           AND suf.STATE = '1'

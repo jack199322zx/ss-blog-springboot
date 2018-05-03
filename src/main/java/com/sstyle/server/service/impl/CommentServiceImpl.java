@@ -5,6 +5,7 @@ import com.sstyle.server.context.event.NotifyEvent;
 import com.sstyle.server.domain.Comment;
 import com.sstyle.server.mapper.CommentMapper;
 import com.sstyle.server.service.CommentService;
+import com.sstyle.server.service.NotifyService;
 import com.sstyle.server.utils.ThreadContext;
 import com.sstyle.server.web.constants.Constants;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +26,8 @@ import java.util.List;
 public class CommentServiceImpl implements CommentService{
     @Autowired
     private CommentMapper commentMapper;
+    @Autowired
+    private NotifyService notifyService;
 
     private Logger logger = LoggerFactory.getLogger(CommentServiceImpl.class);
 
@@ -38,12 +41,13 @@ public class CommentServiceImpl implements CommentService{
     @Override
     @Transactional
     public Comment saveComment(Comment comment) {
-        long id = Id.next();
-        comment.setCommentId(String.valueOf(id));
+        String commentId = String.valueOf(Id.next());
+        comment.setCommentId(commentId);
         comment.setUserId(ThreadContext.getStaffId());
         NotifyEvent notifyEvent = new NotifyEvent("NotifyEvent");
         notifyEvent.setAssociateId(comment.getArticleId());
         notifyEvent.setFromUserId(comment.getUserId());
+        notifyEvent.setCommentId(commentId);
         if (StringUtils.isNotEmpty(comment.getToCommentId())) {
             //回复
             //去找评论
@@ -66,4 +70,14 @@ public class CommentServiceImpl implements CommentService{
     public Comment findCommentById(String commentId) {
         return commentMapper.findCommentById(commentId);
     }
+
+    @Override
+    @Transactional
+    public int deleteComment(Comment comment) {
+        //删除评论时，取消该评论的通知
+        String commentId = comment.getCommentId();
+        notifyService.deleteNotifyByCancelComment(commentId);
+        return commentMapper.deleteCommentById(commentId);
+    }
+
 }

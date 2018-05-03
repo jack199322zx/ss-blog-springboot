@@ -15,6 +15,7 @@ public class Comment implements Serializable{
     private String commentId;
     private String articleId;
     private String userId;
+    private String notifyId;
     private String commentContent;
     private Timestamp createTime;
     private String state;

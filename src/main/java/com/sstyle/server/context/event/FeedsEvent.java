@@ -10,12 +10,14 @@
 package com.sstyle.server.context.event;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.context.ApplicationEvent;
 
 /**
  * @author ss on 2018/4/18.
  */
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class FeedsEvent extends ApplicationEvent {
 	private static final long serialVersionUID = 3220416026013707101L;
 

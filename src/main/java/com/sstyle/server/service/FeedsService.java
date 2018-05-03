@@ -17,20 +17,30 @@ public interface FeedsService {
     int add(Feeds feeds);
 
     /**
-     * 删除动态，取消关注时，删除之前此人的动态
+     * 取消关注时，删除之前此人的动态
      *
-     * @param ownId
+     * @param userId
      * @param authorId
      * @return
      */
-    int deleteByAuthorId(long ownId, long authorId);
+    int deleteByAuthorId(String userId, String authorId);
 
     List<Feeds> findUserFeeds(String userId);
 
     /**
      * 删除文章时触发动态删除
      *
-     * @param postId
+     * @param articleId
      */
-    void deleteByTarget(long postId);
+    void deleteByTarget(String articleId);
+
+    /**
+     * 未读动态数量
+     * @Param userId
+     * @Return int
+     * @Date 2018/5/2 14:55
+     */
+    int unreadDynamics(String userId);
+
+    int readDynamics(Feeds feeds);
 }

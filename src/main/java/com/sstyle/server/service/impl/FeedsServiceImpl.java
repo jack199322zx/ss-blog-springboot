@@ -46,8 +46,8 @@ public class FeedsServiceImpl implements FeedsService{
     }
 
     @Override
-    public int deleteByAuthorId(long ownId, long authorId) {
-        return 0;
+    public int deleteByAuthorId(String userId, String authorId) {
+        return feedsMapper.deleteFeedsByAuthor(userId, authorId);
     }
 
     @Override
@@ -56,7 +56,17 @@ public class FeedsServiceImpl implements FeedsService{
     }
 
     @Override
-    public void deleteByTarget(long postId) {
+    public void deleteByTarget(String articleId) {
+        feedsMapper.deleteByArticleId(articleId);
+    }
 
+    @Override
+    public int unreadDynamics(String userId) {
+        return feedsMapper.unreadDynamics(userId);
+    }
+
+    @Override
+    public int readDynamics(Feeds feeds) {
+        return feedsMapper.updateReadFeeds(feeds);
     }
 }
