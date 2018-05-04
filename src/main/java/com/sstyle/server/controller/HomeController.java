@@ -39,6 +39,11 @@ public class HomeController {
         return new JSONResult(homeService.queryMyArticlesById(userId, page));
     }
 
+    @RequestMapping(value = "/query-other-articles", method = RequestMethod.POST)
+    public JSONResult queryOtherArticles(@RequestParam String userId, @RequestParam int page) {
+        return new JSONResult(homeService.queryMyArticlesById(userId, page));
+    }
+
     @RequestMapping(value = "/query-my-comments", method = RequestMethod.POST)
     public JSONResult queryMyComments(@RequestParam String userId, @RequestParam int page) {
         return new JSONResult(homeService.queryMyCommentsById(userId, page));
@@ -54,14 +59,29 @@ public class HomeController {
         return new JSONResult(homeService.queryMyFavoritesById(userId, page));
     }
 
+    @RequestMapping(value = "/query-other-favorites", method = RequestMethod.POST)
+    public JSONResult queryOtherFavorites(@RequestParam String userId, @RequestParam int page) {
+        return new JSONResult(homeService.queryMyFavoritesById(userId, page));
+    }
+
     @RequestMapping(value = "/query-my-follow", method = RequestMethod.POST)
-    public JSONResult queryMyFollow(@RequestParam String userId) {
-        return new JSONResult(homeService.queryMyFollow(userId));
+    public JSONResult queryMyFollow(@RequestParam String userId, @RequestParam int page) {
+        return new JSONResult(homeService.queryMyFollow(userId, page));
+    }
+
+    @RequestMapping(value = "/query-other-follow", method = RequestMethod.POST)
+    public JSONResult queryOtherFollow(@RequestParam String userId, @RequestParam int page) {
+        return new JSONResult(homeService.queryMyFollow(userId, page));
     }
 
     @RequestMapping(value = "/query-my-fans", method = RequestMethod.POST)
-    public JSONResult queryMyFans(@RequestParam String userId) {
-        return new JSONResult(homeService.queryMyFans(userId));
+    public JSONResult queryMyFans(@RequestParam String userId, @RequestParam int page) {
+        return new JSONResult(homeService.queryMyFans(userId, page));
+    }
+
+    @RequestMapping(value = "/query-other-fans", method = RequestMethod.POST)
+    public JSONResult queryOtherFans(@RequestParam String userId, @RequestParam int page) {
+        return new JSONResult(homeService.queryMyFans(userId, page));
     }
 
     @RequestMapping(value = "/read-notify", method = RequestMethod.POST)

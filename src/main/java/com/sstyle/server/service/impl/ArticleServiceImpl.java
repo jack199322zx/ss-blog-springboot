@@ -17,6 +17,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +34,7 @@ import java.util.Optional;
  * Created by ss on 2018/4/21.
  */
 @Service
+@CacheConfig(cacheNames = "articleCaches")
 public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
@@ -47,9 +51,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     private Logger logger = LoggerFactory.getLogger(ArticleServiceImpl.class);
 
-
     @Override
     @Transactional
+    @CacheEvict(allEntries = true) //发布文章需清除缓存
     public int saveArticle(Mavon mavon) {
         String markdown2Html = MarkdownUtil.ofContent(mavon.getMarkdown()).toString();
         String backImg = QiniuUtil.uploadBase64(mavon.getArticleImg());
@@ -123,10 +127,22 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     @Transactional
+    @CacheEvict(allEntries = true)
     public int deleteArticle(String articleId) {
-        // 删除文章相关的通知和动态
+        // 删除文章相关的通知和动态，同时清除所有文章缓存
         feedsService.deleteByTarget(articleId);
         notifyService.deleteNotifyByArticle(articleId);
         return articleMapper.deleteArticleById(articleId);
     }
+
+    @Cacheable
+    public List<Article> queryAllArticles() {
+        return blogMapper.queryArticles();
+    }
+
+    @Cacheable(key="'article_' + #dist")
+    public List<Article> queryPageArticlesByDist(int dist){
+        return blogMapper.queryPageArticlesByDist(dist);
+    }
+
 }

@@ -11,11 +11,11 @@ import java.util.Map;
  * Created by ss on 2018/4/30.
  */
 public interface HomeService {
-    List<Map> queryDynamics(String userId, int page);
+    Map<String, Object> queryDynamics(String userId, int page);
     Map<String, Object> queryMyArticlesById(String userId, int page);
-    List<Map> queryMyCommentsById(String userId, int page);
-    List<Map> queryMyNotify(String userId, int page);
-    List<Article> queryMyFavoritesById(String userId, int page);
-    List<User> queryMyFollow(String userId);
-    List<User> queryMyFans(String userId);
+    Map<String, Object> queryMyCommentsById(String userId, int page);
+    Map<String, Object> queryMyNotify(String userId, int page);
+    Map<String, Object> queryMyFavoritesById(String userId, int page);
+    Map<String, Object> queryMyFollow(String userId, int page);
+    Map<String, Object> queryMyFans(String userId, int page);
 }

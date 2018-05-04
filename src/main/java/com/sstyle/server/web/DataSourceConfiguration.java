@@ -73,9 +73,6 @@ public class DataSourceConfiguration {
     }
     @Bean
     public SqlSessionFactory sqlSessionFactory(@Qualifier("dataSource") DataSource dataSource) {
-//        SqlSessionFactoryBean bean=new SqlSessionFactoryBean();
-//        bean.setDataSource(dataSource);
-//        return bean;
         try {
             SqlSessionFactoryBean sessionFactoryBean = new SqlSessionFactoryBean();
             sessionFactoryBean.setDataSource(dataSource);

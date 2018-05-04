@@ -20,4 +20,6 @@ public interface ArticleService {
     Map<String, Object> queryFlagByDist(int dist);
     Article queryEditArticleById(String articleId);
     int deleteArticle(String articleId);
+    List<Article> queryAllArticles();
+    List<Article> queryPageArticlesByDist(int dist);
 }

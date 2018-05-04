@@ -6,8 +6,6 @@ import com.sstyle.server.mapper.BlogMapper;
 import com.sstyle.server.service.*;
 import com.sstyle.server.utils.MapUtils;
 import com.sstyle.server.utils.RedisClient;
-import com.sstyle.server.web.cache.ArticleCache;
-import com.sstyle.server.web.cache.FlagCache;
 import com.sstyle.server.web.constants.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,14 +32,14 @@ public class BlogServiceImpl implements BlogService{
     @Autowired
     private FeedsService feedsService;
     @Autowired
-    private ArticleCache articleCache;
+    private ArticleService articleService;
     @Autowired
-    private FlagCache flagCache;
+    private FlagService flagService;
 
     private Logger logger = LoggerFactory.getLogger(BlogServiceImpl.class);
 
     public Map<String, Object> initBlog(int page, int dist) {
-        List<Article> articleDistList = articleCache.queryPageArticlesByDist(dist);
+        List<Article> articleDistList = articleService.queryPageArticlesByDist(dist);
         int size = articleDistList.size();
         logger.info("articleDistList============={}", articleDistList);
         int pageCount = calculatePageCount(size, Constants.ARTICLE_PAGE_SIZE);
@@ -53,11 +51,11 @@ public class BlogServiceImpl implements BlogService{
 
     @Override
     public Map<String, Object> initBlogList() {
-        List<Article> articleList = articleCache.queryAllArticles();
-        List<Article> articleDistList = articleCache.queryPageArticlesByDist(0);
+        List<Article> articleList = articleService.queryAllArticles();
+        List<Article> articleDistList = articleService.queryPageArticlesByDist(0);
         int size = articleDistList.size();
         int pageCount = calculatePageCount(size, Constants.ARTICLE_PAGE_SIZE);
-        List<Flag> flagList = flagCache.queryAllFlags();
+        List<Flag> flagList = flagService.queryAllFlags();
         List<Article> viewNumSortedList = queryArticlesByViewNum(articleList, Constants.ARTICLE_PAGE_SIZE);
         List<Article> createTimeSortedList = queryArticlesByCreateTime(articleList, Constants.ARTICLE_PAGE_SIZE);
         List<Article> commentsSortedList = queryArticlesByComments(articleList, Constants.ARTICLE_PAGE_SIZE);
@@ -92,7 +90,7 @@ public class BlogServiceImpl implements BlogService{
         article.setViewNum(viewNum);
         int publishNum = blogMapper.queryPublishArticleNum(article.getUser().getId());
         int commentsNum = blogMapper.queryCommentsNum(article.getUser().getId());
-        List<Article> articleList = articleCache.queryAllArticles();
+        List<Article> articleList = articleService.queryAllArticles();
         List<Article> viewNumSortedList = queryArticlesByViewNum(articleList, Constants.ARTICLE_PAGE_SIZE);
         List<Article> createTimeSortedList = queryArticlesByCreateTime(articleList, Constants.ARTICLE_PAGE_SIZE);
         List<Article> commentsSortedList = queryArticlesByComments(articleList, Constants.ARTICLE_PAGE_SIZE );

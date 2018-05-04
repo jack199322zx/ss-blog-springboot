@@ -35,7 +35,7 @@ public class HomeServiceImpl implements HomeService{
 
     private Logger logger = LoggerFactory.getLogger(HomeServiceImpl.class);
 
-    public List<Map> queryDynamics(String userId, int page) {
+    public Map<String, Object> queryDynamics(String userId, int page) {
         PageHelper.startPage(page, Constants.HOME_PAGE_SIZE);
         List<Feeds> feedsList = homeMapper.queryDynamicsById(userId);
         PageInfo<Feeds> pageInfo = new PageInfo<>(feedsList);
@@ -53,7 +53,7 @@ public class HomeServiceImpl implements HomeService{
                 dynamicList.add(dataMap);
             });
         }
-        return dynamicList;
+        return MapUtils.of("dynamicList", dynamicList, "pageCount", pageInfo.getPages());
     }
 
     @Override
@@ -65,8 +65,10 @@ public class HomeServiceImpl implements HomeService{
     }
 
     @Override
-    public List<Map> queryMyCommentsById(String userId, int page) {
+    public Map<String, Object> queryMyCommentsById(String userId, int page) {
+        PageHelper.startPage(page, Constants.HOME_PAGE_SIZE);
         List<Comment> commentList = homeMapper.queryMyCommentsById(userId);
+        PageInfo<Comment> pageInfo = new PageInfo<>(commentList);
         List<Map> myCommentsList = new ArrayList<>();
         if (commentList !=null && commentList.size()> 0) {
             commentList.stream().forEach(comm -> {
@@ -74,12 +76,14 @@ public class HomeServiceImpl implements HomeService{
                 myCommentsList.add(MapUtils.of("article", article, "comment", comm));
             });
         }
-        return myCommentsList;
+        return MapUtils.of("myCommentsList", myCommentsList, "pageCount", pageInfo.getPages());
     }
 
     @Override
-    public List<Map> queryMyNotify(String userId, int page) {
+    public Map<String, Object> queryMyNotify(String userId, int page) {
+        PageHelper.startPage(page, Constants.HOME_PAGE_SIZE);
         List<Notify> notifyList = homeMapper.queryMyNotifyById(userId);
+        PageInfo<Notify> pageInfo = new PageInfo<>(notifyList);
         List<Map> myNotifyList = new ArrayList<>();
         if (notifyList !=null && notifyList.size()> 0) {
             notifyList.stream().forEach(ntf -> {
@@ -91,21 +95,30 @@ public class HomeServiceImpl implements HomeService{
                 myNotifyList.add(MapUtils.of("article", article, "user", user, "notify", ntf));
             });
         }
-        return myNotifyList;
+        return MapUtils.of("myNotifyList", myNotifyList, "pageCount", pageInfo.getPages());
     }
 
     @Override
-    public List<Article> queryMyFavoritesById(String userId, int page) {
-        return homeMapper.queryMyFavoritesById(userId);
+    public Map<String, Object> queryMyFavoritesById(String userId, int page) {
+        PageHelper.startPage(page, Constants.HOME_PAGE_SIZE);
+        List<Article> favoriteList = homeMapper.queryMyFavoritesById(userId);
+        PageInfo<Article> pageInfo = new PageInfo<>(favoriteList);
+        return MapUtils.of("favoriteList", favoriteList, "pageCount", pageInfo.getPages());
     }
 
     @Override
-    public List<User> queryMyFollow(String userId) {
-        return homeMapper.queryMyFollow(userId);
+    public Map<String, Object> queryMyFollow(String userId, int page) {
+        PageHelper.startPage(page, Constants.HOME_PAGE_SIZE);
+        List<User> followList = homeMapper.queryMyFollow(userId);
+        PageInfo<User> pageInfo = new PageInfo<>(followList);
+        return MapUtils.of("followList", followList, "pageCount", pageInfo.getPages());
     }
 
     @Override
-    public List<User> queryMyFans(String userId) {
-        return homeMapper.queryMyFans(userId);
+    public Map<String, Object> queryMyFans(String userId, int page) {
+        PageHelper.startPage(page, Constants.HOME_PAGE_SIZE);
+        List<User> fansList = homeMapper.queryMyFans(userId);
+        PageInfo<User> pageInfo = new PageInfo<>(fansList);
+        return MapUtils.of("fansList", fansList, "pageCount", pageInfo.getPages());
     }
 }

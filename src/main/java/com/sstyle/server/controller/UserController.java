@@ -53,4 +53,9 @@ public class UserController {
     public JSONResult cancelFavorite(@RequestParam String articleId, @RequestParam String userId) {
         return new JSONResult(userService.cancelFavoriteByArticleId(articleId, userId));
     }
+
+    @RequestMapping(value = "/query-user-info", method = RequestMethod.POST)
+    public JSONResult queryUserInfo(@RequestParam String userId) {
+        return new JSONResult(userService.queryUserInfo(userId));
+    }
 }

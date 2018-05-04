@@ -1,29 +1,27 @@
-package com.sstyle.server.web.cache;
+package com.sstyle.server.service.impl;
 
-import com.sstyle.server.domain.Article;
 import com.sstyle.server.domain.Flag;
 import com.sstyle.server.mapper.BlogMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.sstyle.server.service.FlagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * @Author ss
- * @Date 2018/5/3 17:53
+ * @Date 2018/5/4 14:25
  */
-@Component
+@Service
 @CacheConfig(cacheNames = "flagCaches")
-public class FlagCache {
-    private Logger logger = LoggerFactory.getLogger(ArticleCache.class);
+public class FlagServiceImpl implements FlagService{
 
     @Autowired
     private BlogMapper blogMapper;
 
+    @Override
     @Cacheable
     public List<Flag> queryAllFlags() {
         return blogMapper.queryTecFlags();
