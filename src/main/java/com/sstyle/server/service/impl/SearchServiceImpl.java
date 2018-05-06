@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +33,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 
@@ -88,7 +93,8 @@ public class SearchServiceImpl implements SearchService{
 
     @Async
     @Override
-    public void generateEsIndex () {
+    public void generateEsIndex (Future<String> future) {
+        for(;!future.isDone(););
         BulkRequestBuilder bulkRequest = client.prepareBulk();
         List<Article> articleList = articleService.queryAllArticles();
         logger.info("开始添加索引,articleList={}", articleList);
@@ -159,16 +165,16 @@ public class SearchServiceImpl implements SearchService{
             BulkResponse bulkResponse = bulkRequest.get();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            client.close();
         }
     }
 
 
     @Async
     @Override
-    public void deleteIndex() {
+    public Future<String> deleteIndex() {
+        logger.info("开始删除索引");
         client.admin().indices().prepareDelete("esindex").get();
         logger.info("删除索引结束===========");
+        return new AsyncResult<String>("ok");
     }
 }

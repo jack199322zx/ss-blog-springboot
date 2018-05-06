@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.Future;
 
 /**
  * Created by ss on 2018/4/21.
@@ -79,11 +80,9 @@ public class ArticleServiceImpl implements ArticleService {
         mavon.getFlagList().stream().forEach(flag -> articleMapper.saveFlagByArticle(articleId, flag.getFlagId()));
         publishEvent(articleId, mavon.getUser());
         int row = articleMapper.saveArticle(article, mavon.getUser());
-        logger.info("删除文章，触发异步更新索引==========");
         // 更新索引
-        searchService.deleteIndex();
-        searchService.generateEsIndex();
-        logger.info("删除文章完毕================");
+        Future<String> future = searchService.deleteIndex();
+        searchService.generateEsIndex(future);
         return row;
     }
 
@@ -141,12 +140,10 @@ public class ArticleServiceImpl implements ArticleService {
         // 删除文章相关的通知和动态，同时清除所有文章缓存
         feedsService.deleteByTarget(articleId);
         notifyService.deleteNotifyByArticle(articleId);
-        logger.info("删除文章，触发异步更新索引==========");
         int row = articleMapper.deleteArticleById(articleId);
         // 更新索引
-        searchService.deleteIndex();
-        searchService.generateEsIndex();
-        logger.info("删除文章完毕================");
+        Future<String> future = searchService.deleteIndex();
+        searchService.generateEsIndex(future);
         return row;
     }
 

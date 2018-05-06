@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.Future;
+
 
 /**
  * Created by ss on 2018/5/5.
@@ -27,7 +29,8 @@ public class ScheduleTask {
 
     public void execute() {
         logger.info("开始异步执行更新索引=============");
-        searchService.generateEsIndex();
+        Future<String> future = searchService.deleteIndex();
+        searchService.generateEsIndex(future);
         logger.info("更新索引结束================");
     }
 }
