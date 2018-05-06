@@ -9,6 +9,7 @@ import com.sstyle.server.mapper.BlogMapper;
 import com.sstyle.server.service.ArticleService;
 import com.sstyle.server.service.FeedsService;
 import com.sstyle.server.service.NotifyService;
+import com.sstyle.server.service.SearchService;
 import com.sstyle.server.utils.*;
 import com.sstyle.server.web.constants.Constants;
 import org.apache.commons.lang3.StringUtils;
@@ -45,6 +46,8 @@ public class ArticleServiceImpl implements ArticleService {
     private FeedsService feedsService;
     @Autowired
     private NotifyService notifyService;
+    @Autowired
+    private SearchService searchService;
 
     @Value("${web.upload-path}")
     private String location;
@@ -75,7 +78,13 @@ public class ArticleServiceImpl implements ArticleService {
         article.setArticleType(mavon.getChannelId());
         mavon.getFlagList().stream().forEach(flag -> articleMapper.saveFlagByArticle(articleId, flag.getFlagId()));
         publishEvent(articleId, mavon.getUser());
-        return articleMapper.saveArticle(article, mavon.getUser());
+        int row = articleMapper.saveArticle(article, mavon.getUser());
+        logger.info("删除文章，触发异步更新索引==========");
+        // 更新索引
+        searchService.deleteIndex();
+        searchService.generateEsIndex();
+        logger.info("删除文章完毕================");
+        return row;
     }
 
     @Override
@@ -132,7 +141,13 @@ public class ArticleServiceImpl implements ArticleService {
         // 删除文章相关的通知和动态，同时清除所有文章缓存
         feedsService.deleteByTarget(articleId);
         notifyService.deleteNotifyByArticle(articleId);
-        return articleMapper.deleteArticleById(articleId);
+        logger.info("删除文章，触发异步更新索引==========");
+        int row = articleMapper.deleteArticleById(articleId);
+        // 更新索引
+        searchService.deleteIndex();
+        searchService.generateEsIndex();
+        logger.info("删除文章完毕================");
+        return row;
     }
 
     @Cacheable

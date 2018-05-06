@@ -1,6 +1,11 @@
 package com.sstyle.server.web;
 
+import com.sstyle.server.web.constants.Constants;
 import com.sstyle.server.web.interceptor.AuthorizationInterceptor;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
@@ -11,6 +16,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.servlet.MultipartConfigElement;
+import java.net.InetAddress;
 
 /**
  * Created ss on 18/3/14.
@@ -39,5 +45,22 @@ public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
         //设置总上传数据总大小
         factory.setMaxRequestSize("50MB");
         return factory.createMultipartConfig();
+    }
+
+    @Bean
+    public TransportClient transportClient() {
+        TransportClient client = null;
+        String address = Constants.ELASTICSEARCH_ADDRESS;
+        String port = Constants.ELASTICSEARCH_PORT;
+
+        try {
+            Settings settings = Settings.builder().put("cluster.name", "elasticsearch").build();
+            client = new PreBuiltTransportClient(settings)
+                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(address), Integer.parseInt(port)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return client;
     }
 }

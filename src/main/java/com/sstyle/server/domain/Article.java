@@ -1,6 +1,8 @@
 package com.sstyle.server.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
 
 import java.io.Serializable;
@@ -13,6 +15,8 @@ import java.util.Map;
  * Created by ss on 2018/4/5.
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Article implements Serializable{
 
     private String articleId;
@@ -29,4 +33,11 @@ public class Article implements Serializable{
     private int viewNum;
     private int authorRec;
     private List<Flag> flagList;
+
+    public Article(String articleId, String articleTitle,
+                   String articleDesc) {
+        this.articleId = articleId;
+        this.articleTitle = articleTitle;
+        this.articleDesc = articleDesc;
+    }
 }
