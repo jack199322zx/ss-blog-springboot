@@ -10,4 +10,5 @@ import java.util.List;
 public interface SearchMapper {
     List<String> queryKeywords(String keywords);
     int saveKeywords(@Param("keywords") String keywords, @Param("searchId") String searchId);
+    List<String> queryHotSearch();
 }

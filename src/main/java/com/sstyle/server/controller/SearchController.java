@@ -24,7 +24,12 @@ public class SearchController {
 
     @RequestMapping("/search-articles")
     public JSONResult searchArticles(@RequestParam String search) {
-        return new JSONResult(searchService.saveKeywords(search));
+        return new JSONResult(searchService.searchArticle(search));
+    }
+
+    @RequestMapping("/save-keywords")
+    public JSONResult saveKeywords(@RequestParam String keywords) {
+        return new JSONResult(searchService.saveKeywords(keywords));
     }
 
 }

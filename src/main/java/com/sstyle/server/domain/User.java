@@ -26,4 +26,6 @@ public class User implements Serializable{
     private DateTime createTime;
     private DateTime updateTime;
     private Map<String, Object> notifyAndDynamics;
+
+
 }

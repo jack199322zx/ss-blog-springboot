@@ -34,4 +34,16 @@ public class RegisterController {
     public JSONResult activate(String checkCode, String userId) throws UserExistException{
         return registerService.activate(checkCode, userId);
     }
+
+    @RequestMapping(value = "/checkUserCode")
+    public JSONResult checkPhone(String userCode){
+        return new JSONResult(registerService.checkPhoneNum(userCode));
+    }
+
+    @RequestMapping(value = "/saveUserName")
+    public JSONResult saveUserName(@RequestParam String userName, @RequestParam String userId){
+        return new JSONResult(registerService.saveUserName(userName, userId));
+    }
+
+
 }

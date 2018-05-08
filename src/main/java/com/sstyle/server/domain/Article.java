@@ -34,10 +34,18 @@ public class Article implements Serializable{
     private int authorRec;
     private List<Flag> flagList;
 
-    public Article(String articleId, String articleTitle,
-                   String articleDesc) {
+    public Article(String articleId,String articleTitle,String articleDesc,String articleImg,String articleSign,
+    Timestamp createTime,Timestamp updateTime,List<Flag> flagList,int viewNum,int commentsNum,int favoriteNum) {
         this.articleId = articleId;
         this.articleTitle = articleTitle;
         this.articleDesc = articleDesc;
+        this.articleImg = articleImg;
+        this.articleSign = articleSign;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
+        this.flagList = flagList;
+        this.viewNum = viewNum;
+        this.commentsNum = commentsNum;
+        this.favoriteNum = favoriteNum;
     }
 }

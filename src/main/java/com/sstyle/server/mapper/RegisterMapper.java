@@ -13,4 +13,6 @@ public interface RegisterMapper {
     int saveUserByPhone(@Param("params") Map params);
     int saveUserRole(@Param("userId") String userId, @Param("roleId") String roleId);
     int updateActiveUser(String userId);
+    int checkPhoneNum(String phoneNum);
+    int saveUserName(@Param("userName") String userName,@Param("userId") String userId);
 }

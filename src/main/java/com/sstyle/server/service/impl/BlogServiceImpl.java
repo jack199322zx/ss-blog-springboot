@@ -50,7 +50,7 @@ public class BlogServiceImpl implements BlogService{
     }
 
     @Override
-    public Map<String, Object> initBlogList() {
+    public Map<Object, Object> initBlogList() {
         List<Article> articleList = articleService.queryAllArticles();
         List<Article> articleDistList = articleService.queryPageArticlesByDist(0);
         int size = articleDistList.size();
@@ -59,12 +59,15 @@ public class BlogServiceImpl implements BlogService{
         List<Article> viewNumSortedList = queryArticlesByViewNum(articleList, Constants.ARTICLE_PAGE_SIZE);
         List<Article> createTimeSortedList = queryArticlesByCreateTime(articleList, Constants.ARTICLE_PAGE_SIZE);
         List<Article> commentsSortedList = queryArticlesByComments(articleList, Constants.ARTICLE_PAGE_SIZE);
-        return MapUtils.of("flagList", flagList,
+        List<Map> userList = blogMapper.queryHotUser();
+        return MapUtils.asMap("flagList", flagList,
                 "viewNumSortedList", viewNumSortedList,
                 "createTimeSortedList", createTimeSortedList,
                 "commentsSortedList", commentsSortedList,
                 "articleDistList", articleDistList,
-                "pageCount", pageCount);
+                "pageCount", pageCount,
+                "hotUserList", userList
+                );
 
     }
 
@@ -103,13 +106,15 @@ public class BlogServiceImpl implements BlogService{
             }
             return comm;
         }).collect(Collectors.toList());
+        List<Map> userList = blogMapper.queryHotUser();
         return MapUtils.asMap("article", article,
                 "publishNum", publishNum,
                 "commentsNum", commentsNum,
                 "viewNumSortedList", viewNumSortedList,
                 "createTimeSortedList", createTimeSortedList,
                 "commentsSortedList", commentsSortedList,
-                "commentList", filterCommentsList
+                "commentList", filterCommentsList,
+                "hotUserList", userList
                 );
     }
 

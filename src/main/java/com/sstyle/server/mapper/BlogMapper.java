@@ -2,6 +2,7 @@ package com.sstyle.server.mapper;
 
 import com.sstyle.server.domain.Article;
 import com.sstyle.server.domain.Flag;
+import com.sstyle.server.domain.User;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public interface BlogMapper {
     List<Flag> queryTecFlags();
     List<Article> queryPageArticlesByDist(int dist);
     Article queryArticleDetailById(String articleId);
+    List<Map> queryHotUser();
     int queryPublishArticleNum(String userId);
     int queryCommentsNum(String userId);
     int updateViewNum(@Param("viewNum") int viewNum, @Param("articleId") String articleId);

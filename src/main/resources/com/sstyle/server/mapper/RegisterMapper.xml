@@ -21,4 +21,11 @@
         UPDATE ss_user SET STATE = '1' WHERE USER_ID = #{id}
     </update>
 
+    <select id="checkPhoneNum" resultType="int" parameterType="string">
+        SELECT COUNT(*) FROM ss_user WHERE USER_CODE = #{id}
+    </select>
+
+    <update id="saveUserName">
+        UPDATE ss_user SET USER_NAME = #{userName} WHERE USER_ID = #{userId}
+    </update>
 </mapper>

@@ -21,7 +21,7 @@
             <result column="USER_NAME" property="userName"/>
             <result column="USER_AVATAR" property="avatar"/>
         </association>
-        <collection property="flagList"  ofType="com.sstyle.server.domain.Flag" column="ARTICLE_ID"
+        <collection property="flagList" ofType="com.sstyle.server.domain.Flag" column="ARTICLE_ID"
                     select="findFlags" javaType="java.util.ArrayList">
         </collection>
     </resultMap>
@@ -37,14 +37,16 @@
     </resultMap>
 
 
-    <select id="queryArticles"  resultMap="articleMap">
+    <select id="queryArticles" resultMap="articleMap">
        SELECT sa.AUTHOR_REC , sa.VIEW_NUM , sa.COMMENTS_NUM , sa.UPDATE_TIME ,
         sa.CREATE_TIME , sa.ARTICLE_IMG , sa.ARTICLE_TYPE , sa.ARTICLE_DESC ,
-        sa.ARTICLE_TITLE , sa.FAVORITE_NUM ,CAST(sa.ARTICLE_ID as char) 'ARTICLE_ID'
-        FROM ss_article sa
+        sa.ARTICLE_TITLE , sa.FAVORITE_NUM , sa.ARTICLE_SIGN, CAST(sa.ARTICLE_ID as char) 'ARTICLE_ID',
+        CAST(su.USER_ID as char) 'USER_ID',su.USER_NAME, su.USER_AVATAR
+        FROM ss_article sa LEFT JOIN ss_user su
+        ON (sa.USER_ID = su.USER_ID AND su.STATE = '1')
     </select>
 
-    <select id="queryTecFlags"  resultMap="flagMap">
+    <select id="queryTecFlags" resultMap="flagMap">
         SELECT FLAG_ID, FLAG_DIST , FLAG_TYPE, FLAG_TYPE_DESC, FLAG_INFO
         FROM ss_flag
         WHERE STATE = '1'
@@ -121,5 +123,12 @@
     <update id="updateCommentsNum">
         UPDATE ss_article SET COMMENTS_NUM = #{commentsNum}, UPDATE_TIME = NOW() WHERE ARTICLE_ID = #{articleId}
     </update>
+
+    <select id="queryHotUser" resultType="map">
+        SELECT su.USER_ID 'id',su.USER_CODE 'userCode',su.USER_AVATAR 'avatar',COUNT(suf.FOLLOW_USER_ID) 'followCount'
+          FROM ss_user su LEFT JOIN ss_user_follow suf ON su.USER_ID = suf.FOLLOW_USER_ID
+          WHERE su.STATE = '1'
+          ORDER BY followCount DESC
+    </select>
 
 </mapper>

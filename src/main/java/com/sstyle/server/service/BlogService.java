@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public interface BlogService {
     Map<String, Object> initBlog(int page, int dist);
-    Map<String, Object> initBlogList();
+    Map<Object, Object> initBlogList();
     JSONResult queryLoginInfo(HttpServletRequest request);
     Map<Object, Object> queryArticleDetail(String articleId);
 }

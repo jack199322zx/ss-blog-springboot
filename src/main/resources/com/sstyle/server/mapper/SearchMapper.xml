@@ -7,5 +7,10 @@
 
     <insert id="saveKeywords">
         INSERT INTO ss_search(SEARCH_ID, KEY_WORDS, CREATE_TIME, UPDATE_TIME) VALUES(#{searchId}, #{keywords}, NOW(),NOW())
+        ON DUPLICATE KEY UPDATE UPDATE_TIME = NOW(), SEARCH_NUM = SEARCH_NUM + 1
     </insert>
+
+    <select id="queryHotSearch" resultType="string">
+        SELECT KEY_WORDS FROM ss_search ORDER BY SEARCH_NUM DESC
+    </select>
 </mapper>

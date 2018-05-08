@@ -90,7 +90,7 @@ public class RegisterServiceImpl implements RegisterService {
             }
         }
         registerMapper.saveUserRole(String.valueOf(userId), Constants.PRIMARY_USER_ROLE_ID);
-        return new JSONResult("ok");
+        return new JSONResult(userId);
     }
 
     /**
@@ -130,5 +130,15 @@ public class RegisterServiceImpl implements RegisterService {
             return new JSONResult("success");
         }
         throw new UserExistException();
+    }
+
+    @Override
+    public int checkPhoneNum(String phoneNum) {
+        return registerMapper.checkPhoneNum(phoneNum);
+    }
+
+    @Override
+    public int saveUserName(String userName, String userId) {
+        return registerMapper.saveUserName(userName, userId);
     }
 }
