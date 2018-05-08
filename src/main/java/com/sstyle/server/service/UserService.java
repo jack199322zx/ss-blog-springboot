@@ -24,5 +24,7 @@ public interface UserService {
     int cancelFollowById(String authorId, String followerId);
     int saveFavoriteByArticleId(String articleId, String userId);
     int cancelFavoriteByArticleId(String articleId, String userId);
+    int saveUserInfo(String userAddress,String nickName);
+    int saveUserNewPassword(String newPassword, String oldPassword);
     JSONResult uploadAvatar(String map, HttpServletRequest request) throws IOException;
 }

@@ -11,7 +11,7 @@
         <result column="TO_COMMENT_ID" property="toCommentId" javaType="string"/>
         <association property="user" javaType="com.sstyle.server.domain.User">
             <id column="USER_ID" property="id"></id>
-            <result column="USER_CODE" property="userCode"/>
+            <result column="USER_NAME" property="userName"/>
             <result column="USER_AVATAR" property="avatar" javaType="string"/>
         </association>
     </resultMap>

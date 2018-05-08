@@ -11,11 +11,10 @@ import com.sstyle.server.mapper.UserMapper;
 import com.sstyle.server.service.FeedsService;
 import com.sstyle.server.service.NotifyService;
 import com.sstyle.server.service.UserService;
+import com.sstyle.server.utils.*;
 import com.sstyle.server.utils.MapUtils;
-import com.sstyle.server.utils.QiniuUtil;
-import com.sstyle.server.utils.RedisClient;
-import com.sstyle.server.utils.ThreadContext;
 import com.sstyle.server.web.constants.Constants;
+import org.apache.commons.collections.*;
 import org.hibernate.validator.internal.constraintvalidators.bv.past.PastValidatorForReadableInstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -128,5 +127,19 @@ public class UserServiceImpl implements UserService{
     @Override
     public User queryUserInfo(String userId) {
         return userMapper.queryUserInfo(userId);
+    }
+
+    @Override
+    public int saveUserInfo(String userAddress, String nickName) {
+        return userMapper.saveUserInfo(userAddress, nickName, ThreadContext.getStaffId());
+    }
+
+    @Override
+    public int saveUserNewPassword(String newPassword, String oldPassword) {
+        User user = userMapper.queryUsername(ThreadContext.getStaffCode());
+        if (!AESUtil.aesDecode(user.getPassword()).equals(oldPassword)) {
+            return 0;
+        }
+        return userMapper.saveUserPwd(AESUtil.aesEncode(newPassword), ThreadContext.getStaffId());
     }
 }

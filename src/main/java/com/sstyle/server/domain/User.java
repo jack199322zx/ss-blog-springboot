@@ -25,6 +25,7 @@ public class User implements Serializable{
     private String avatar;
     private DateTime createTime;
     private DateTime updateTime;
+    private String state;
     private Map<String, Object> notifyAndDynamics;
 
 

@@ -17,6 +17,10 @@ public interface UserMapper {
 
     User queryUserInfo(String userId);
 
+    int saveUserPwd(@Param("password") String password, @Param("userId") String userId);
+
+    int saveUserInfo(@Param("address") String address, @Param("userName") String userName, @Param("userId") String userId);
+
     int saveUserFavorite(@Param("userId") String userId, @Param("articleId") String articleId);
 
     int cancelUserFavorite(@Param("userId") String userId, @Param("articleId") String articleId);

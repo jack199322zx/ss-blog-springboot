@@ -125,10 +125,14 @@
     </update>
 
     <select id="queryHotUser" resultType="map">
-        SELECT su.USER_ID 'id',su.USER_CODE 'userCode',su.USER_AVATAR 'avatar',COUNT(suf.FOLLOW_USER_ID) 'followCount'
-          FROM ss_user su LEFT JOIN ss_user_follow suf ON su.USER_ID = suf.FOLLOW_USER_ID
-          WHERE su.STATE = '1'
-          ORDER BY followCount DESC
+        SELECT t.*, COUNT(t.counts) 'followCount'
+        FROM (SELECT su.USER_ID 'id',su.USER_CODE 'userName',
+	            su.USER_AVATAR 'avatar',suf.FOLLOW_USER_ID 'counts'
+                FROM ss_user su
+                LEFT JOIN ss_user_follow suf ON su.USER_ID = suf.FOLLOW_USER_ID
+                WHERE su.STATE = '1')t
+        GROUP BY t.id
+        ORDER BY followCount DESC
     </select>
 
 </mapper>

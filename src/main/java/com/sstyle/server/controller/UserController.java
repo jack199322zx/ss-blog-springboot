@@ -58,4 +58,15 @@ public class UserController {
     public JSONResult queryUserInfo(@RequestParam String userId) {
         return new JSONResult(userService.queryUserInfo(userId));
     }
+
+    @RequestMapping(value = "/save-user-info", method = RequestMethod.POST)
+    public JSONResult saveUserInfo(@RequestParam String userAddress, @RequestParam String nickName) {
+        return new JSONResult(userService.saveUserInfo(userAddress, nickName));
+    }
+
+    @RequestMapping(value = "/save-user-pwd", method = RequestMethod.POST)
+    public JSONResult saveUserPassword(@RequestParam String oldPassword, @RequestParam String newPassword) {
+        return new JSONResult(userService.saveUserNewPassword(newPassword, oldPassword));
+    }
+
 }
