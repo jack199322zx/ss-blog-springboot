@@ -80,6 +80,7 @@ public class RegisterServiceImpl implements RegisterService {
             } catch (Exception e) {
                 throw new UserExistException();
             }
+            registerMapper.saveUserRole(String.valueOf(userId), Constants.UNACTIVE_USER_ROLE_ID);
         } else {
             //注册用户为手机注册
             params.put("password", AESUtil.aesEncode((String) params.get("password")));
@@ -88,8 +89,8 @@ public class RegisterServiceImpl implements RegisterService {
             } catch (Exception e) {
                 throw new UserExistException();
             }
+            registerMapper.saveUserRole(String.valueOf(userId), Constants.PRIMARY_USER_ROLE_ID);
         }
-        registerMapper.saveUserRole(String.valueOf(userId), Constants.PRIMARY_USER_ROLE_ID);
         return new JSONResult(userId);
     }
 
@@ -126,6 +127,7 @@ public class RegisterServiceImpl implements RegisterService {
         if ("0".equals(statusCode)) {
             //激活成功
             registerMapper.updateActiveUser(userId);
+            registerMapper.saveUserRole(String.valueOf(userId), Constants.PRIMARY_USER_ROLE_ID);
             RedisClient.hset("ACTIVE_USER_" + userId + ":CHECK_CODE=" + checkCode, userId + "|" + checkCode, "1");
             return new JSONResult("success");
         }

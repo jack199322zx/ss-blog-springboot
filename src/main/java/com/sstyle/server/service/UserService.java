@@ -17,8 +17,8 @@ import java.util.Set;
 public interface UserService {
     User findByUsercode(String userCode); //根据用户名查找用户
     User queryUserInfo(String userId);
-    Set<String> findRoles(String username);// 根据用户名查找其角色
-    Set<String> findPermissions(String staffId);// 根据用户名查找其权限
+    Set<String> findRoles(String userCode);
+    Set<String> findPermissions(String userCode);
     Map<String, Integer> queryUserFavoriteAndFollow(String userId, String articleId, String authorId);
     int saveFollowById(String authorId, String followerId);
     int cancelFollowById(String authorId, String followerId);

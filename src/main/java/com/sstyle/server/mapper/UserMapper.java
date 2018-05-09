@@ -36,6 +36,6 @@ public interface UserMapper {
     int saveUserAvatar(@Param("avatar") String avatar,@Param("userId") String userId);
 
     List<User> queryFollowerByUserId(String userId);
-    //    Set<String> queryRoles(String username);
-//    Set<String> queryPermissions(String staffId);
+    Set<String> queryRoles(String userCode);
+    Set<String> queryPermissions(String userCode);
 }

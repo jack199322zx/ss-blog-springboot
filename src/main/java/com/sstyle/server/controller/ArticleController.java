@@ -3,6 +3,7 @@ package com.sstyle.server.controller;
 import com.sstyle.server.domain.JSONResult;
 import com.sstyle.server.domain.Mavon;
 import com.sstyle.server.service.ArticleService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +14,7 @@ import java.io.IOException;
  * Created by ss on 2018/4/21.
  */
 @RestController
+@RequiresPermissions("MENU:ARTICLE")
 @RequestMapping("/article")
 public class ArticleController {
 

@@ -59,4 +59,19 @@
     <update id="saveUserPwd">
         UPDATE ss_user SET USER_PASSWORD = #{password} WHERE USER_ID = #{userId}
     </update>
+
+    <select id="queryRoles" resultType="string" parameterType="string">
+        SELECT sur.ROLE_ID FROM ss_user_role sur, ss_user su
+        WHERE su.USER_CODE = #{code}
+        AND sur.USER_ID = su.USER_ID
+    </select>
+
+    <select id="queryPermissions" resultType="string" parameterType="string">
+        SELECT ssr.RIGHT_NAME FROM ss_sys_right ssr, ss_sys_role_right ssrr, ss_user_role sur, ss_sys_role sse, ss_user su
+        WHERE su.USER_CODE = #{code}
+        AND sur.ROLE_ID = sse.ROLE_ID
+        AND sse.ROLE_ID = ssrr.ROLE_ID
+        AND ssr.RIGHT_ID = ssrr.RIGHT_ID
+        AND sur.USER_ID = su.USER_ID
+    </select>
 </mapper>

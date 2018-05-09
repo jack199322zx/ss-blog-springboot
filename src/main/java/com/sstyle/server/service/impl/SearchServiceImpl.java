@@ -112,8 +112,8 @@ public class SearchServiceImpl implements SearchService{
                 String fragments = articleDescHightLight.getFragments()[0].toString();
                 int spanPrefix = fragments.indexOf("<span") - 20;
                 int spanSubfix = fragments.indexOf("</span>") + 20;
-                int start = spanPrefix>0 ? spanPrefix: 0;
-                int end = spanSubfix<fragments.length()? spanSubfix: fragments.length();
+                int start = spanPrefix>30 ? spanPrefix: 0;
+                int end = spanSubfix<fragments.length()-6? spanSubfix: fragments.length();
                 articleDesc = fragments.substring(start,end);
             }
             Article article = new Article(hit.id(), articleTitle, articleDesc, articleImg, articleSign,

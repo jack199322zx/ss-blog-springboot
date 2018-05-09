@@ -51,13 +51,13 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Set<String> findRoles(String username) {
-        return null;
+    public Set<String> findRoles(String userCode) {
+        return userMapper.queryRoles(userCode);
     }
 
     @Override
-    public Set<String> findPermissions(String staffId) {
-        return null;
+    public Set<String> findPermissions(String userCode) {
+        return userMapper.queryPermissions(userCode);
     }
 
     @Override
@@ -142,4 +142,5 @@ public class UserServiceImpl implements UserService{
         }
         return userMapper.saveUserPwd(AESUtil.aesEncode(newPassword), ThreadContext.getStaffId());
     }
+
 }
