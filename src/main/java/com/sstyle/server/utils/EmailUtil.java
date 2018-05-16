@@ -17,7 +17,9 @@ public class EmailUtil {
     private static String myEmailPassword = "ss8181066";
     private static String myEmailSMTPHost = "smtp.ym.163.com";
     private static String receiveMailAccount = "yourEmailAccount";
-    private static String callBackUrl = "http://localhost:8999/#/active?checkCode=";
+//    private static String callBackUrl = "http://localhost:8999/#/active?checkCode=";
+    private static String callBackUrl = "http://www.52nino.cn/#/active?checkCode=";
+
 
     public static void sendEmail(String checkCode, String userId, String receiveAccount) {
         Properties props = new Properties();

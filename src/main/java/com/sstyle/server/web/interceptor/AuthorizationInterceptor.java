@@ -30,6 +30,7 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
     public static final String BLOG_REGISTER_SAVE = "/register/saveUserInfo";
     public static final String BLOG_REGISTER_ACTIVE = "/register/activate";
     public static final String BLOG_PORTAL = "/blog/init";
+    public static final String BLOG_LIST = "/blog/blog-list";
     public static final String BLOG_CHECK_LOGIN = "/blog/check-login";
     public static final String BLOG_ARTICLE_DETAIL = "/blog/blog-detail";
     public static final String HOME_QUERY_ARTICLES = "/home/query-other-articles";
@@ -37,10 +38,6 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
     public static final String HOME_QUERY_FOLLOW = "/home/query-other-follow";
     public static final String HOME_QUERY_FANS = "/home/query-other-fans";
     public static final String HOME_QUERY_USER = "/user/query-user-info";
-
-
-
-
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
 
@@ -48,6 +45,7 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         String servletPath = request.getServletPath();
+        logger.info("servletPath==============={}", servletPath);
 
         // 过滤 No AUTH 的请求
         if (servletPath.equalsIgnoreCase(GT_INIT_PATH) || servletPath.equalsIgnoreCase(GT_LOGIN_PATH)
@@ -56,7 +54,7 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
                 || servletPath.equalsIgnoreCase(BLOG_CHECK_LOGIN) || servletPath.equalsIgnoreCase(BLOG_ARTICLE_DETAIL)
                 || servletPath.equalsIgnoreCase(HOME_QUERY_ARTICLES) || servletPath.equalsIgnoreCase(HOME_QUERY_FANS)
                 || servletPath.equalsIgnoreCase(HOME_QUERY_FAVORITES) || servletPath.equalsIgnoreCase(HOME_QUERY_FOLLOW)
-                || servletPath.equalsIgnoreCase(HOME_QUERY_USER)) {
+                || servletPath.equalsIgnoreCase(HOME_QUERY_USER) || servletPath.equalsIgnoreCase(BLOG_LIST)) {
             logger.info("===============过滤no auth请求==============");
             return true;
         }

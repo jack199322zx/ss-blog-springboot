@@ -4,7 +4,7 @@
     <select id="queryRights" parameterType="string" resultType="com.sstyle.server.domain.Right">
         SELECT RIGHT_NAME 'name', RIGHT_DESC 'desc', RIGHT_TYPE 'type', UPDATE_TIME 'updateTime', CREATE_TIME 'createTime'
         FROM ss_sys_right
-        WHERE RIGHT_ID = (
+        WHERE RIGHT_ID IN (
           SELECT ssrr.RIGHT_ID FROM ss_sys_role_right ssrr, ss_user_role sur
           WHERE ssrr.ROLE_ID = sur.ROLE_ID AND sur.USER_ID = #{id})
         AND RIGHT_STATE = '1'

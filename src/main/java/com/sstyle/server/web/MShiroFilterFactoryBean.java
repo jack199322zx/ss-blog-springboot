@@ -7,6 +7,8 @@ import org.apache.shiro.web.filter.mgt.FilterChainResolver;
 import org.apache.shiro.web.filter.mgt.PathMatchingFilterChainResolver;
 import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.apache.shiro.web.servlet.AbstractShiroFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanInitializationException;
 
 import javax.servlet.FilterChain;
@@ -21,6 +23,7 @@ import java.util.Set;
 
 public class MShiroFilterFactoryBean extends ShiroFilterFactoryBean {
     private Set<String> ignoreExt = new HashSet<>();
+    private Logger logger = LoggerFactory.getLogger(MShiroFilterFactoryBean.class);
 
     @Override
     protected AbstractShiroFilter createInstance() throws Exception {
@@ -66,19 +69,13 @@ public class MShiroFilterFactoryBean extends ShiroFilterFactoryBean {
             // ，而在每次请求里面都做了session的读取和更新访问时间等操作，这样在集群部署session共享的情况下，数量级的加大了处理量负载。
             // 所以我们这里将一些能忽略的请求忽略掉。
             // 当然如果你的集群系统使用了动静分离处理，静态资料的请求不会到Filter这个层面，便可以忽略。
-            boolean flag = true;
-            int idx = 0;
-            if(( idx = str.indexOf(".")) > 0){
-                str = str.substring(idx + 1);
-                if(ignoreExt.contains(str.toLowerCase()))
-                    flag = false;
-                ignoreExt.add(str.toLowerCase());
-            }
-            if(flag){
-                super.doFilterInternal(servletRequest, servletResponse, chain);
-            }else{
-                chain.doFilter(servletRequest, servletResponse);
-            }
+//            int idx = 0;
+//            if(( idx = str.indexOf(".")) > 0){
+//                str = str.substring(idx + 1);
+//                ignoreExt.add(str.toLowerCase());
+//            }
+            logger.info("str=================={}", str);
+            super.doFilterInternal(servletRequest, servletResponse, chain);
         }
     }
 }
