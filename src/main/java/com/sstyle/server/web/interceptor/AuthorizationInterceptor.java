@@ -40,6 +40,7 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
     public static final String HOME_QUERY_USER = "/user/query-user-info";
     public static final String SEARCH_KEYWORDS = "/search/find-keywords";
     public static final String SEARCH_ARTICLES = "/search/search-articles";
+    public static final String OPEN_QQ_CHAT = "/oath/link-me";
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
 
@@ -57,7 +58,8 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
                 || servletPath.equalsIgnoreCase(HOME_QUERY_ARTICLES) || servletPath.equalsIgnoreCase(HOME_QUERY_FANS)
                 || servletPath.equalsIgnoreCase(HOME_QUERY_FAVORITES) || servletPath.equalsIgnoreCase(HOME_QUERY_FOLLOW)
                 || servletPath.equalsIgnoreCase(HOME_QUERY_USER) || servletPath.equalsIgnoreCase(BLOG_LIST)
-                || servletPath.equalsIgnoreCase(SEARCH_ARTICLES) || servletPath.equalsIgnoreCase(SEARCH_KEYWORDS)) {
+                || servletPath.equalsIgnoreCase(SEARCH_ARTICLES) || servletPath.equalsIgnoreCase(SEARCH_KEYWORDS)
+                || servletPath.equalsIgnoreCase(OPEN_QQ_CHAT)) {
             logger.info("===============过滤no auth请求==============");
             return true;
         }

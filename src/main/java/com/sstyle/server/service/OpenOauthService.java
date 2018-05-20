@@ -22,4 +22,6 @@ public interface OpenOauthService {
 
     void saveOauthToken(OpenOauth oauth);
 
+    void openQQchat() throws Exception;
+
 }
