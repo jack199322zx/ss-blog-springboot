@@ -41,8 +41,8 @@ public class RegisterController {
     }
 
     @RequestMapping(value = "/saveUserName")
-    public JSONResult saveUserName(@RequestParam String userName, @RequestParam String userId){
-        return new JSONResult(registerService.saveUserName(userName, userId));
+    public JSONResult saveUserName(@RequestParam String userName){
+        return new JSONResult(registerService.saveUserName(userName));
     }
 
 

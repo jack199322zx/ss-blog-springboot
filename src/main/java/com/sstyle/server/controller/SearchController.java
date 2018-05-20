@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.Future;
+
 /**
  * Created by ss on 2018/5/5.
  */
@@ -30,6 +32,16 @@ public class SearchController {
     @RequestMapping("/save-keywords")
     public JSONResult saveKeywords(@RequestParam String keywords) {
         return new JSONResult(searchService.saveKeywords(keywords));
+    }
+
+    /**
+     * 手动更新索引接口
+     * @return
+     */
+    @RequestMapping("/generate-es")
+    public void generateEs() {
+        Future<String> future = searchService.deleteIndex();
+        searchService.generateEsIndex(future);
     }
 
 }

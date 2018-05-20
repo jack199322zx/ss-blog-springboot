@@ -22,8 +22,6 @@ import java.util.concurrent.Future;
 public class ScheduleTask {
 
     @Autowired
-    private TransportClient client;
-    @Autowired
     private SearchService searchService;
     private Logger logger = LoggerFactory.getLogger(ScheduleTask.class);
 

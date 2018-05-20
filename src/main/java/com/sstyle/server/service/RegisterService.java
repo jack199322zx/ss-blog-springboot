@@ -15,5 +15,5 @@ public interface RegisterService {
     JSONResult saveUser(Map params) throws UserExistException;
     JSONResult activate(String checkCode, String userId) throws UserExistException;
     int checkPhoneNum(String phoneNum);
-    int saveUserName(String userName, String userId);
+    int saveUserName(String userName);
 }

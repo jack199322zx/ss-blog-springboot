@@ -47,8 +47,6 @@ public class ArticleServiceImpl implements ArticleService {
     private FeedsService feedsService;
     @Autowired
     private NotifyService notifyService;
-    @Autowired
-    private SearchService searchService;
 
     private Logger logger = LoggerFactory.getLogger(ArticleServiceImpl.class);
 
@@ -77,9 +75,6 @@ public class ArticleServiceImpl implements ArticleService {
         mavon.getFlagList().stream().forEach(flag -> articleMapper.saveFlagByArticle(articleId, flag.getFlagId()));
         publishEvent(articleId, mavon.getUser());
         int row = articleMapper.saveArticle(article, mavon.getUser());
-        // 更新索引
-        Future<String> future = searchService.deleteIndex();
-        searchService.generateEsIndex(future);
         return row;
     }
 
@@ -138,9 +133,6 @@ public class ArticleServiceImpl implements ArticleService {
         feedsService.deleteByTarget(articleId);
         notifyService.deleteNotifyByArticle(articleId);
         int row = articleMapper.deleteArticleById(articleId);
-        // 更新索引
-        Future<String> future = searchService.deleteIndex();
-        searchService.generateEsIndex(future);
         return row;
     }
 
