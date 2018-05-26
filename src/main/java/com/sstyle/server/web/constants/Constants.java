@@ -33,7 +33,6 @@ public class Constants {
     public static final String IMG_PREFIX = "http://www.52nino.cn/ss-server/";
     public static final String PRIMARY_USER_ROLE_ID = "40002"; //普通用户
     public static final String UNACTIVE_USER_ROLE_ID = "40004"; //未激活用户
-    public static final String TEMP_DIR = "/usr/local/temp";
     public static final String ELASTICSEARCH_ADDRESS = "127.0.0.1"; //ES 的配置
     public static final String ELASTICSEARCH_PORT = "9300";
     public static final String OPEN_QQ_CHAT = "tencent://message/?uin=461333622&Site=在线客服&Menu=yes";

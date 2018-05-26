@@ -68,7 +68,7 @@ public class OpenOauthServiceImpl implements OpenOauthService {
         }
         else {
             // Unix or Linux的打开方式
-            String[] browsers = { "firefox", "opera", "konqueror", "epiphany", "mozilla", "netscape" };
+            String[] browsers = { "firefox", "opera", "konqueror", "epiphany", "mozilla", "netscape", "chrome" };
             String browser = null;
             for (int count = 0; count < browsers.length && browser == null; count++)
                 //执行代码，在brower有值后跳出，

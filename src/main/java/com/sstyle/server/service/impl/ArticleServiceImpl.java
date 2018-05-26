@@ -47,6 +47,8 @@ public class ArticleServiceImpl implements ArticleService {
     private FeedsService feedsService;
     @Autowired
     private NotifyService notifyService;
+    @Value("${web.path}")
+    private String location;
 
     private Logger logger = LoggerFactory.getLogger(ArticleServiceImpl.class);
 
@@ -91,7 +93,7 @@ public class ArticleServiceImpl implements ArticleService {
         logger.info("上传图片:name={},type={}", root_fileName, contentType);
         //获取路径
         String return_path = ImageUtil.getFilePath(ThreadContext.getStaffId());
-        String filePath = Constants.TEMP_DIR + return_path;
+        String filePath = location + File.separator + return_path;
         logger.info("图片保存路径={}", filePath);
         String file_name = ImageUtil.saveImg(file, filePath);
         logger.info("返回文件名={}", file_name);
@@ -100,7 +102,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
     @Override
     public JSONResult delImg(String filename) {
-        String delPath = Constants.TEMP_DIR + File.separator + ImageUtil.getFilePath(ThreadContext.getStaffId()) + File.separator + filename;
+        String delPath = location + File.separator + ImageUtil.getFilePath(ThreadContext.getStaffId()) + File.separator + filename;
         return  ImageUtil.delImgFile(delPath)? new JSONResult("ok"): new JSONResult("failed");
     }
 
