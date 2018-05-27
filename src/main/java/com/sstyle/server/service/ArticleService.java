@@ -14,7 +14,7 @@ import java.util.Map;
  * Created by ss on 2018/4/21.
  */
 public interface ArticleService {
-    int saveArticle(Mavon mavon);
+    int saveArticle(Mavon mavon, int isEdit);
     JSONResult backUrl(MultipartFile file) throws IOException;
     JSONResult delImg(String filename);
     Map<String, Object> queryFlagByDist(int dist);

@@ -26,7 +26,7 @@ public class RedisClient {
         jedisPoolConfig.setMaxTotal(maxClients);
         jedisPoolConfig.setTestOnBorrow(true);
 
-        pool = new JedisPool(jedisPoolConfig, host, port, timeout, null, database);
+        pool = new JedisPool(jedisPoolConfig, host, port, timeout, "847515", database);
     }
 
     private static Jedis jedis() {

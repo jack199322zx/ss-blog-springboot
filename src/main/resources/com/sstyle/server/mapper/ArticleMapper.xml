@@ -22,6 +22,12 @@
         WHERE ARTICLE_ID = #{id}
     </update>
 
+    <insert id="saveArticleMarkdown">
+        INSERT INTO ss_article_markdown(ARTICLE_ID, MARKDOWN_CONTENT, CREATE_TIME, UPDATE_TIME)
+          VALUES (#{articleId}, #{markdown},NOW(), NOW())
+          ON DUPLICATE KEY UPDATE MARKDOWN_CONTENT = #{markdown}, UPDATE_TIME = NOW()
+    </insert>
+
     <insert id="saveArticle">
         INSERT INTO ss_article(ARTICLE_ID, USER_ID, ARTICLE_DESC,ARTICLE_TYPE,ARTICLE_TITLE,
         <if test="article.articleSign !=null and article.articleSign != ''">

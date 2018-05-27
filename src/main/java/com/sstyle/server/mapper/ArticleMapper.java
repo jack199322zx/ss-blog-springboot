@@ -15,6 +15,7 @@ public interface ArticleMapper {
     int saveFavoriteById(String articleId);
     int cancelFavoriteById(String articleId);
     int saveArticle(@Param("article") Article article,@Param("user") User user);
+    int saveArticleMarkdown(@Param("markdown")String markdown,@Param("articleId") String articleId);
     int saveFlagByArticle(@Param("articleId") String articleId,@Param("flagId") int flagId);
     List<Flag> queryFlagByDist(int dist);
     int deleteArticleById(String articleId);

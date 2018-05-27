@@ -29,6 +29,8 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
     public static final String BLOG_REGISTER_INIT = "/register/init-captcha";
     public static final String BLOG_REGISTER_SAVE = "/register/saveUserInfo";
     public static final String BLOG_REGISTER_ACTIVE = "/register/activate";
+    public static final String BLOG_REGISTER_CHECK = "/register/checkUserCode";
+    public static final String BLOG_REGISTER_SAVE_NAME = "/register/saveUserName";
     public static final String BLOG_PORTAL = "/blog/init";
     public static final String BLOG_LIST = "/blog/blog-list";
     public static final String BLOG_CHECK_LOGIN = "/blog/check-login";
@@ -59,7 +61,8 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
                 || servletPath.equalsIgnoreCase(HOME_QUERY_FAVORITES) || servletPath.equalsIgnoreCase(HOME_QUERY_FOLLOW)
                 || servletPath.equalsIgnoreCase(HOME_QUERY_USER) || servletPath.equalsIgnoreCase(BLOG_LIST)
                 || servletPath.equalsIgnoreCase(SEARCH_ARTICLES) || servletPath.equalsIgnoreCase(SEARCH_KEYWORDS)
-                || servletPath.equalsIgnoreCase(OPEN_QQ_CHAT)) {
+                || servletPath.equalsIgnoreCase(OPEN_QQ_CHAT) || servletPath.equalsIgnoreCase(BLOG_REGISTER_CHECK)
+                || servletPath.equalsIgnoreCase(BLOG_REGISTER_SAVE_NAME)) {
             logger.info("===============过滤no auth请求==============");
             return true;
         }

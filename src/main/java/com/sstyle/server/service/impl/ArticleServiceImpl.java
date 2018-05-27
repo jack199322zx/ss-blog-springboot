@@ -55,22 +55,27 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional
     @CacheEvict(allEntries = true) //发布文章需清除缓存
-    public int saveArticle(Mavon mavon) {
-        String markdown2Html = MarkdownUtil.ofContent(mavon.getMarkdown()).toString();
-        String backImg = QiniuUtil.uploadBase64(mavon.getArticleImg());
-        Article article = new Article();
-        article.setArticleTitle(mavon.getTitle());
-        article.setArticleImg(backImg);
-        article.setArticleDesc(markdown2Html);
-        article.setArticleSign(Optional.ofNullable(mavon.getSign()).orElse(""));
+    public int saveArticle(Mavon mavon, int isEdit) {
+        String articleImg = mavon.getArticleImg();
+        if (articleImg != null && articleImg.indexOf("clouddn") == -1) {
+            //图片第一次保存或图片改变
+            articleImg = QiniuUtil.uploadBase64(articleImg);
+        }
         String articleId;
-        String mavonArticleId = mavon.getArticleId();
-        if (StringUtils.isNotEmpty(mavonArticleId)) {
+        if (isEdit == 1) {
             //编辑文章
-            articleId = mavonArticleId;
-        }else {
+            articleId = mavon.getArticleId();
+        } else {
             articleId = String.valueOf(Id.next());
         }
+        String markdown = mavon.getMarkdown();
+        articleMapper.saveArticleMarkdown(markdown, articleId);
+        String markdown2Html = MarkdownUtil.ofContent(markdown).toString();
+        Article article = new Article();
+        article.setArticleTitle(mavon.getTitle());
+        article.setArticleImg(articleImg);
+        article.setArticleDesc(markdown2Html);
+        article.setArticleSign(Optional.ofNullable(mavon.getSign()).orElse(""));
         article.setArticleId(articleId);
         article.setFlagList(mavon.getFlagList());
         article.setArticleType(mavon.getChannelId());
@@ -100,10 +105,11 @@ public class ArticleServiceImpl implements ArticleService {
         return new JSONResult(Constants.IMG_PREFIX + return_path + File.separator + file_name);
 
     }
+
     @Override
     public JSONResult delImg(String filename) {
         String delPath = location + File.separator + ImageUtil.getFilePath(ThreadContext.getStaffId()) + File.separator + filename;
-        return  ImageUtil.delImgFile(delPath)? new JSONResult("ok"): new JSONResult("failed");
+        return ImageUtil.delImgFile(delPath) ? new JSONResult("ok") : new JSONResult("failed");
     }
 
     @Override
@@ -113,6 +119,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     /**
      * 发布事件
+     *
      * @return
      */
     private void publishEvent(String articleId, User user) {
@@ -124,7 +131,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public Article queryEditArticleById(String articleId) {
-        return blogMapper.queryArticleDetailById(articleId);
+        return blogMapper.queryArticleMarkdownById(articleId);
     }
 
     @Override
@@ -143,8 +150,8 @@ public class ArticleServiceImpl implements ArticleService {
         return blogMapper.queryArticles();
     }
 
-    @Cacheable(key="'article_' + #dist")
-    public List<Article> queryPageArticlesByDist(int dist){
+    @Cacheable(key = "'article_' + #dist")
+    public List<Article> queryPageArticlesByDist(int dist) {
         return blogMapper.queryPageArticlesByDist(dist);
     }
 

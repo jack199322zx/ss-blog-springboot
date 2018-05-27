@@ -108,6 +108,14 @@
 		WHERE sa.ARTICLE_ID = #{id}
     </select>
 
+    <select id="queryArticleMarkdownById" parameterType="string" resultMap="articleMap">
+        SELECT sa.ARTICLE_SIGN,sa.ARTICLE_IMG ,sa.ARTICLE_TYPE ,sa.ARTICLE_TITLE , CAST(sa.ARTICLE_ID as char) 'ARTICLE_ID',
+          sam.MARKDOWN_CONTENT 'ARTICLE_DESC'
+          FROM ss_article sa ,ss_article_markdown sam
+          WHERE sa.ARTICLE_ID = sam.ARTICLE_ID
+          AND sam.ARTICLE_ID = #{id}
+    </select>
+
     <select id="queryPublishArticleNum" parameterType="string" resultType="int">
         SELECT COUNT(*) FROM ss_article WHERE USER_ID = #{id}
     </select>

@@ -21,9 +21,9 @@ public class ArticleController {
     @Autowired
     private ArticleService articleService;
 
-    @RequestMapping(value = "/submit", method = RequestMethod.POST)
-    public JSONResult submitMavon(@RequestBody Mavon mavon) {
-        return new JSONResult(articleService.saveArticle(mavon));
+    @RequestMapping(value = "/submit/{isEdit}", method = RequestMethod.POST)
+    public JSONResult submitMavon(@RequestBody Mavon mavon, @PathVariable int isEdit) {
+        return new JSONResult(articleService.saveArticle(mavon, isEdit));
     }
 
     @RequestMapping(value = "/img-upload", method = RequestMethod.POST)

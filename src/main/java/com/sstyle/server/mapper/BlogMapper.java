@@ -17,6 +17,7 @@ public interface BlogMapper {
     List<Flag> queryTecFlags();
     List<Article> queryPageArticlesByDist(int dist);
     Article queryArticleDetailById(String articleId);
+    Article queryArticleMarkdownById(String articleId);
     List<Map> queryHotUser();
     int queryPublishArticleNum(String userId);
     int queryCommentsNum(String userId);
