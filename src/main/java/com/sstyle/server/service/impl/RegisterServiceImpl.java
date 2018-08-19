@@ -140,7 +140,7 @@ public class RegisterServiceImpl implements RegisterService {
     }
 
     @Override
-    public int saveUserName(String userName) {
-        return registerMapper.saveUserName(userName, ThreadContext.getStaffId());
+    public int saveUserName(String userName, String userId) {
+        return registerMapper.saveUserName(userName, userId);
     }
 }

@@ -30,7 +30,7 @@ public class Constants {
     public static final int ARTICLE_PAGE_SIZE = 6; //分页大小
     public static final int HOME_PAGE_SIZE = 15;
 //    public static final String IMG_PREFIX = "http://localhost:8988/ss-server/"; //图片存储路径前缀
-    public static final String IMG_PREFIX = "http://www.52nino.cn/ss-server/";
+    public static final String IMG_PREFIX = "http://www.52nino.cn/";
     public static final String PRIMARY_USER_ROLE_ID = "40002"; //普通用户
     public static final String UNACTIVE_USER_ROLE_ID = "40004"; //未激活用户
     public static final String ELASTICSEARCH_ADDRESS = "127.0.0.1"; //ES 的配置

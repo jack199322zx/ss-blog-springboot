@@ -87,7 +87,7 @@ public class ImageUtil {
      */
     public static String getFilePath(String dirName) {
         //处理图片
-        String path = "article"
+        String path = "image"
                 + File.separator + dirName
                 + File.separator + DateFormatUtils.format(new Date(), "yyyy-MM-dd");
         return path;
